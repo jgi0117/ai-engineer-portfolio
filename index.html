@@ -47,8 +47,8 @@
         cv: 'Computer Vision',
         genai: 'Generative AI'
       })[category] || 'AI Project';
-      const imageUrl = (fileName) => fileName ? `../public/images/${encodeURIComponent(fileName)}` : '';
-      const pdfUrl = (fileName) => fileName ? `../public/${encodeURIComponent(fileName)}` : '';
+      const imageUrl = (fileName) => fileName ? `./public/images/${encodeURIComponent(fileName)}` : '';
+      const pdfUrl = (fileName) => fileName ? `./public/${encodeURIComponent(fileName)}` : '';
       const palettes = [
         { surface: 'bg-indigo-50', ink: 'text-indigo-700', line: 'group-hover:border-indigo-300', badge: 'bg-indigo-600' },
         { surface: 'bg-cyan-50', ink: 'text-cyan-700', line: 'group-hover:border-cyan-300', badge: 'bg-cyan-600' },
