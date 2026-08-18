@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AI 엔지니어 프로젝트 포트폴리오" />
+    <title>AI Engineer — Project List</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --font-sans: Inter, Pretendard, "Noto Sans KR", ui-sans-serif, system-ui, sans-serif;
+        --color-ink: #121826;
+        --color-paper: #f5f7fb;
+        --color-accent: #4f46e5;
+      }
+
+      @layer base {
+        html { scroll-behavior: smooth; }
+        body { @apply m-0 bg-paper font-sans text-ink antialiased; }
+        button, a { @apply outline-none; }
+        button:focus-visible, a:focus-visible { @apply ring-2 ring-accent ring-offset-2; }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app" class="min-h-screen"></main>
+
+    <script src="./projects-data.js"></script>
+    <script>
+      const projects = (window.portfolioProjects || []).sort((a, b) => {
+        const endA = a.period.split('~')[1]?.trim() || '';
+        const endB = b.period.split('~')[1]?.trim() || '';
+        return endB.localeCompare(endA);
+      });
+
+      const app = document.getElementById('app');
+      let view = 'list';
+      let selected = 0;
+      let activeFilter = 'all';
+
+      const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+
+      const categoryLabel = (category) => ({
+        llm: 'LLM · RAG',
+        cv: 'Computer Vision',
+        genai: 'Generative AI'
+      })[category] || 'AI Project';
+      const imageUrl = (fileName) => fileName ? `./public/images/${encodeURIComponent(fileName)}` : '';
+      const pdfUrl = (fileName) => fileName ? `./public/${encodeURIComponent(fileName)}` : '';
+      const palettes = [
+        { surface: 'bg-indigo-50', ink: 'text-indigo-700', line: 'group-hover:border-indigo-300', badge: 'bg-indigo-600' },
+        { surface: 'bg-cyan-50', ink: 'text-cyan-700', line: 'group-hover:border-cyan-300', badge: 'bg-cyan-600' },
+        { surface: 'bg-orange-50', ink: 'text-orange-700', line: 'group-hover:border-orange-300', badge: 'bg-orange-500' },
+        { surface: 'bg-violet-50', ink: 'text-violet-700', line: 'group-hover:border-violet-300', badge: 'bg-violet-600' },
+        { surface: 'bg-emerald-50', ink: 'text-emerald-700', line: 'group-hover:border-emerald-300', badge: 'bg-emerald-600' }
+      ];
+
+      const canonicalTechLogos = {};
+      projects.forEach((project) => project.techStack.forEach((group) => {
+        const items = typeof group === 'string' ? [group] : group.items;
+        items.forEach((technology) => {
+          const item = typeof technology === 'string' ? { name: technology } : technology;
+          if (item.logo && !canonicalTechLogos[item.name]) canonicalTechLogos[item.name] = item.logo;
+        });
+      }));
+
+      const techAliases = {
+        OpenAI: 'OpenAI API',
+        GCP: 'GCP',
+        GitHub: 'GitHub'
+      };
+
+      const brandIconUrls = {
+        'Stable Diffusion': 'https://cdn.simpleicons.org/stabilityai',
+        ControlNet: 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20width%3D%2224%22%20height%3D%2224%22%20rx%3D%225%22%20fill%3D%22%236d5dfc%22%2F%3E%3Cpath%20d%3D%22M5%207h6v4H5V7Zm8%206h6v4h-6v-4ZM9%209h6v6H9V9Z%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fsvg%3E',
+        Miro: 'https://cdn.simpleicons.org/miro/F7C922'
+      };
+
+      function techItems(project) {
+        const items = project.techStack.flatMap((group) => typeof group === 'string' ? [group] : group.items);
+        return items.map((item) => typeof item === 'string' ? { name: item } : item)
+          .map((item) => ({
+            ...item,
+            logo: item.logo || canonicalTechLogos[item.name] || canonicalTechLogos[techAliases[item.name]] || brandIconUrls[item.name]
+          }))
+          .filter((item, index, all) => all.findIndex((candidate) => candidate.name === item.name) === index);
+      }
+
+      function renderList() {
+        const filtered = projects
+          .map((project, index) => ({ project, index }))
+          .filter(({ project }) => activeFilter === 'all' || project.category === activeFilter);
+
+        document.title = 'AI Engineer — Project List';
+        app.innerHTML = `
+          <div class="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8 sm:py-16">
+            <header class="mb-10 flex flex-col gap-6 border-b border-slate-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p class="mb-4 text-xs font-black tracking-[0.24em] text-accent uppercase">AI Engineer Portfolio</p>
+                <h1 class="max-w-4xl text-5xl leading-[0.95] font-black tracking-[-0.06em] text-balance sm:text-7xl">
+                  프로젝트 한눈에 보기
+                </h1>
+              </div>
+              <p class="shrink-0 text-sm font-bold text-slate-400">${String(filtered.length).padStart(2, '0')} PROJECTS</p>
+            </header>
+
+            <nav class="mb-6 flex flex-wrap gap-2" aria-label="프로젝트 분야 필터">
+              ${[
+                ['all', '전체'], ['genai', 'Generative AI'], ['llm', 'LLM · RAG'], ['cv', 'Computer Vision']
+              ].map(([key, label]) => `
+                <button type="button" data-filter="${key}"
+                  class="rounded-full border px-5 py-2.5 text-sm font-extrabold transition ${activeFilter === key
+                    ? 'border-ink bg-ink text-white'
+                    : 'border-slate-200 bg-white text-slate-500 hover:border-slate-400 hover:text-ink'}">
+                  ${label}
+                </button>
+              `).join('')}
+            </nav>
+
+            <section class="grid gap-5 md:grid-cols-2" aria-label="프로젝트 목록">
+              ${filtered.map(({ project, index }, visibleIndex) => {
+                const palette = palettes[index % palettes.length];
+                const stackPreview = techItems(project).slice(0, 4);
+                return `
+                <button type="button" data-project="${index}"
+                  class="group flex w-full flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 ${palette.line} hover:shadow-2xl hover:shadow-slate-900/10">
+                  <span class="relative grid aspect-[2/1] w-full place-items-center overflow-hidden ${palette.surface} p-5 sm:p-7">
+                    <span class="absolute top-5 left-5 z-10 flex flex-wrap gap-2">
+                      <span class="rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-black tracking-wider shadow-sm backdrop-blur">${categoryLabel(project.category)}</span>
+                      ${project.isTeamLead ? '<span class="rounded-full bg-amber-400 px-3 py-1.5 text-[11px] font-black text-amber-950 shadow-sm">♛ TEAM LEAD</span>' : ''}
+                    </span>
+                    <span class="absolute top-5 right-5 z-10 text-xs font-black tracking-[0.18em] ${palette.ink}">${String(visibleIndex + 1).padStart(2, '0')}</span>
+                    <img src="${imageUrl(project.mainImage)}" alt="${escapeHtml(project.projectTitle)} 대표 이미지" loading="lazy" class="h-full w-full object-contain transition duration-500 group-hover:scale-[1.03]" />
+                  </span>
+                  <span class="flex flex-1 flex-col p-6 sm:p-7">
+                    <span class="mb-2 block text-xs font-extrabold tracking-wider text-slate-400 uppercase">${escapeHtml(project.period)} · ${escapeHtml(project.role)}</span>
+                    <span class="block text-2xl leading-tight font-black tracking-[-0.04em] sm:text-[1.7rem]">${escapeHtml(project.projectTitle)}</span>
+                    <span class="mt-3 block text-sm leading-6 text-slate-500">${escapeHtml(project.summary)}</span>
+                    <span class="mt-6 grid grid-cols-3 gap-2 border-y border-slate-100 py-4">
+                      ${project.metrics.slice(0, 3).map((metric) => `
+                        <span class="min-w-0">
+                          <span class="block text-[10px] font-bold text-slate-400">${escapeHtml(metric.label)}</span>
+                          <strong class="mt-1 block text-xs leading-tight font-black text-ink sm:text-sm">${escapeHtml(metric.value)}</strong>
+                        </span>
+                      `).join('')}
+                    </span>
+                    <span class="mt-5 flex items-center justify-between gap-4">
+                      <span class="flex -space-x-1.5">
+                        ${stackPreview.map((item) => `<span title="${escapeHtml(item.name)}" class="grid size-8 place-items-center rounded-full border-2 border-white bg-slate-50 text-[10px] font-black text-slate-500">${item.logo ? `<img src="${escapeHtml(item.logo)}" alt="${escapeHtml(item.name)}" class="size-5 object-contain" />` : escapeHtml(item.name).slice(0, 2)}</span>`).join('')}
+                      </span>
+                      <span class="flex items-center gap-2 text-xs font-black ${palette.ink}">CASE STUDY <span class="grid size-9 place-items-center rounded-full ${palette.badge} text-lg text-white">↗</span></span>
+                    </span>
+                  </span>
+                </button>
+              `}).join('')}
+            </section>
+          </div>
+        `;
+
+        document.querySelectorAll('[data-filter]').forEach((button) => button.addEventListener('click', () => {
+          activeFilter = button.dataset.filter;
+          renderList();
+        }));
+
+        document.querySelectorAll('[data-project]').forEach((button) => button.addEventListener('click', () => {
+          selected = Number(button.dataset.project);
+          view = 'detail';
+          history.pushState({ project: selected }, '', `#project-${selected + 1}`);
+          renderDetail();
+          window.scrollTo(0, 0);
+        }));
+      }
+
+      function renderDetail() {
+        const project = projects[selected];
+        if (!project) return renderList();
+        const stacks = techItems(project);
+        document.title = `${project.projectTitle} — AI Engineer`;
+
+        app.innerHTML = `
+          <div class="mx-auto w-full max-w-7xl px-3 py-3 sm:px-6 sm:py-6">
+            <nav class="sticky top-3 z-30 mb-4 flex items-center justify-between rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-lg shadow-slate-900/5 backdrop-blur-xl">
+              <button type="button" data-back class="rounded-xl px-4 py-3 text-sm font-black hover:bg-slate-100">← LIST</button>
+              <span class="hidden text-xs font-black tracking-[0.16em] text-slate-400 sm:block">PROJECT ${String(selected + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}</span>
+              <div class="flex gap-1">
+                <button type="button" data-move="-1" class="rounded-xl px-4 py-3 text-sm font-black hover:bg-slate-100" aria-label="이전 프로젝트">← PREV</button>
+                <button type="button" data-move="1" class="rounded-xl px-4 py-3 text-sm font-black hover:bg-slate-100" aria-label="다음 프로젝트">NEXT →</button>
+              </div>
+            </nav>
+
+            <article class="grid gap-4">
+              <header class="grid overflow-hidden rounded-[2rem] bg-ink text-white lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,.95fr)]">
+                <div class="flex flex-col justify-center p-7 sm:p-10 lg:p-12">
+                  <div class="mb-8 flex flex-wrap items-center gap-3">
+                    <span class="rounded-full border border-white/20 px-3 py-1 text-xs font-black tracking-wider">${categoryLabel(project.category)}</span>
+                    ${project.isTeamLead ? '<span class="rounded-full bg-amber-400 px-3 py-1 text-xs font-black text-amber-950">♛ TEAM LEAD</span>' : ''}
+                  </div>
+                  <h1 class="max-w-4xl text-4xl leading-[1.05] font-black tracking-[-0.055em] text-balance sm:text-6xl">${escapeHtml(project.projectTitle)}</h1>
+                  <p class="mt-6 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg">${escapeHtml(project.summary)}</p>
+                  <div class="mt-8 grid gap-3 sm:grid-cols-2">
+                    <span class="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300"><b class="mb-1 block text-xs text-white">기간</b>${escapeHtml(project.period)}</span>
+                    <span class="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300"><b class="mb-1 block text-xs text-white">담당 역할</b>${escapeHtml(project.role)}</span>
+                  </div>
+                  <div class="mt-8 flex flex-wrap gap-3">
+                    ${project.githubUrl ? `<a href="${escapeHtml(project.githubUrl)}" target="_blank" rel="noreferrer" class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">GitHub 보기 ↗</a>` : ''}
+                    ${project.pdfFile ? `<a href="${pdfUrl(project.pdfFile)}" target="_blank" rel="noreferrer" class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">PPT 자료 보기 ↗</a>` : ''}
+                    <a href="./AI_엔지니어_portfolio.html" target="_blank" class="rounded-xl border border-white/20 px-5 py-3 text-sm font-black transition hover:bg-white/10">원본 자료 보기 ↗</a>
+                  </div>
+                </div>
+                <div class="grid bg-slate-50 p-4 sm:p-6">
+                  <div class="grid min-h-72 place-items-center overflow-hidden rounded-3xl bg-white p-5 shadow-inner sm:min-h-96 sm:p-8">
+                    <img src="${imageUrl(project.mainImage)}" alt="${escapeHtml(project.projectTitle)} 대표 이미지" class="max-h-96 w-full object-contain" />
+                  </div>
+                  <div class="mt-4 grid grid-cols-3 gap-2">
+                    ${project.metrics.slice(0, 3).map((metric, metricIndex) => `
+                      <div class="min-w-0 rounded-2xl ${metricIndex === 0 ? 'bg-[#5138ee] text-white' : 'bg-white text-ink'} p-4 shadow-sm">
+                        <span class="block text-[10px] font-bold ${metricIndex === 0 ? 'text-indigo-200' : 'text-slate-400'}">${escapeHtml(metric.label)}</span>
+                        <strong class="mt-2 block text-sm leading-tight font-black tracking-tight sm:text-base">${escapeHtml(metric.value)}</strong>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </header>
+
+              <section class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                ${[
+                  ['01', '문제 정의', project.problem, 'bg-rose-500', '문제'],
+                  ['02', '해결 방법', project.solution, 'bg-indigo-500', '접근'],
+                  ['03', '결과', project.result, 'bg-emerald-500', '성과'],
+                  ['04', '배운 점', project.learned, 'bg-amber-500', '회고']
+                ].map(([number, title, copy, accent, tag]) => `
+                  <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <span class="absolute inset-x-0 top-0 h-1.5 ${accent}"></span>
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-black tracking-[0.18em] text-slate-400">${number}</span>
+                      <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black text-slate-500">${tag}</span>
+                    </div>
+                    <h2 class="mt-4 text-2xl font-black tracking-tight">${title}</h2>
+                    <p class="mt-4 text-sm leading-6 text-slate-600">${escapeHtml(copy)}</p>
+                  </div>
+                `).join('')}
+              </section>
+
+              <section class="grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
+                <div class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-8">
+                  <p class="text-xs font-black tracking-[0.18em] text-indigo-500">PROCESS</p>
+                  <h2 class="mt-3 text-2xl font-black tracking-tight">서비스 흐름</h2>
+                  <ol class="mt-6 grid gap-2">
+                    ${(project.serviceFlow || []).map((step, index) => `
+                      <li class="flex items-center gap-4 rounded-2xl bg-slate-50 p-4">
+                        <span class="grid size-9 shrink-0 place-items-center rounded-full bg-ink text-xs font-black text-white">${String(index + 1).padStart(2, '0')}</span>
+                        <strong class="text-sm leading-6">${escapeHtml(step)}</strong>
+                      </li>
+                    `).join('')}
+                  </ol>
+                  ${project.flowImage && project.flowImage !== 'image_flow_caregiver_verification.png' ? `
+                    <img src="${imageUrl(project.flowImage)}" alt="${escapeHtml(project.projectTitle)} 서비스 흐름도" loading="lazy" class="mt-6 w-full rounded-2xl border border-slate-200 bg-slate-50 object-contain" />
+                  ` : ''}
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-8">
+                  <p class="text-xs font-black tracking-[0.18em] text-indigo-500">TECH STACK</p>
+                  <h2 class="mt-3 text-2xl font-black tracking-tight">사용 기술</h2>
+                  <div class="mt-6 flex flex-wrap gap-2">
+                    ${stacks.map((item) => `
+                      <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-extrabold">
+                        ${item.logo ? `<img src="${escapeHtml(item.logo)}" alt="" class="size-5 object-contain" />` : ''}
+                        ${escapeHtml(item.name === 'Git' ? 'GitHub' : item.name)}
+                      </span>
+                    `).join('')}
+                  </div>
+                </div>
+              </section>
+            </article>
+          </div>
+        `;
+
+        document.querySelector('[data-back]').addEventListener('click', () => {
+          history.pushState({}, '', location.pathname);
+          view = 'list';
+          renderList();
+          window.scrollTo(0, 0);
+        });
+
+        document.querySelectorAll('[data-move]').forEach((button) => button.addEventListener('click', () => {
+          selected = (selected + Number(button.dataset.move) + projects.length) % projects.length;
+          history.replaceState({ project: selected }, '', `#project-${selected + 1}`);
+          renderDetail();
+          window.scrollTo(0, 0);
+        }));
+      }
+
+      function renderFromLocation() {
+        const match = location.hash.match(/^#project-(\d+)$/);
+        if (match) {
+          selected = Math.min(Math.max(Number(match[1]) - 1, 0), projects.length - 1);
+          view = 'detail';
+          renderDetail();
+        } else {
+          view = 'list';
+          renderList();
+        }
+      }
+
+      window.addEventListener('popstate', renderFromLocation);
+      renderFromLocation();
+    </script>
+  </body>
+</html>
