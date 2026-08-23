@@ -49,6 +49,45 @@
       })[category] || 'AI Project';
       const imageUrl = (fileName) => fileName ? `./public/images/${encodeURIComponent(fileName)}` : '';
       const pdfUrl = (fileName) => fileName ? `./public/${encodeURIComponent(fileName)}` : '';
+
+      function openPresentation(project) {
+        if (!project.pdfFile) return;
+
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-2 backdrop-blur-sm sm:p-5';
+        modal.innerHTML = `
+          <section role="dialog" aria-modal="true" aria-labelledby="presentation-title" class="flex h-[96dvh] w-full max-w-7xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:h-[92dvh] sm:rounded-3xl">
+            <header class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 px-4 py-3 sm:px-6">
+              <div class="min-w-0">
+                <p class="text-[10px] font-black tracking-[0.18em] text-indigo-500">PRESENTATION</p>
+                <h2 id="presentation-title" class="truncate text-sm font-black text-ink sm:text-base">${escapeHtml(project.projectTitle)}</h2>
+              </div>
+              <button type="button" data-close-presentation class="grid size-10 shrink-0 place-items-center rounded-full bg-slate-100 text-xl font-bold text-slate-600 transition hover:bg-slate-200 hover:text-ink" aria-label="PPT 닫기">×</button>
+            </header>
+            <iframe src="${pdfUrl(project.pdfFile)}#view=FitH&toolbar=0&navpanes=0" title="${escapeHtml(project.projectTitle)} PPT 자료" class="min-h-0 w-full flex-1 bg-slate-100"></iframe>
+          </section>
+        `;
+
+        const closeButton = modal.querySelector('[data-close-presentation]');
+        const previousOverflow = document.body.style.overflow;
+        const closeModal = () => {
+          document.removeEventListener('keydown', handleEscape);
+          document.body.style.overflow = previousOverflow;
+          modal.remove();
+        };
+        const handleEscape = (event) => {
+          if (event.key === 'Escape') closeModal();
+        };
+
+        modal.addEventListener('click', (event) => {
+          if (event.target === modal) closeModal();
+        });
+        closeButton.addEventListener('click', closeModal);
+        document.addEventListener('keydown', handleEscape);
+        document.body.style.overflow = 'hidden';
+        document.body.appendChild(modal);
+        closeButton.focus();
+      }
       const palettes = [
         { surface: 'bg-indigo-50', ink: 'text-indigo-700', line: 'group-hover:border-indigo-300', badge: 'bg-indigo-600' },
         { surface: 'bg-cyan-50', ink: 'text-cyan-700', line: 'group-hover:border-cyan-300', badge: 'bg-cyan-600' },
@@ -205,8 +244,7 @@
                   </div>
                   <div class="mt-8 flex flex-wrap gap-3">
                     ${project.githubUrl ? `<a href="${escapeHtml(project.githubUrl)}" target="_blank" rel="noreferrer" class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">GitHub 보기 ↗</a>` : ''}
-                    ${project.pdfFile ? `<a href="${pdfUrl(project.pdfFile)}" target="_blank" rel="noreferrer" class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">PPT 자료 보기 ↗</a>` : ''}
-                    <a href="./AI_엔지니어_portfolio.html" target="_blank" class="rounded-xl border border-white/20 px-5 py-3 text-sm font-black transition hover:bg-white/10">원본 자료 보기 ↗</a>
+                    ${project.pdfFile ? `<button type="button" data-presentation class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">PPT 자료 보기</button>` : ''}
                   </div>
                 </div>
                 <div class="grid bg-slate-50 p-4 sm:p-6">
@@ -289,6 +327,8 @@
           renderDetail();
           window.scrollTo(0, 0);
         }));
+
+        document.querySelector('[data-presentation]')?.addEventListener('click', () => openPresentation(project));
       }
 
       function renderFromLocation() {

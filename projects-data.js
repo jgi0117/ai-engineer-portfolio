@@ -30,7 +30,8 @@ window.portfolioProjects = [
           learned: 'AI 모델을 설계할 때는 단순 성능 지표뿐 아니라 신규 class 추가, unknown class 대응, 유지보수 같은 운영적 측면도 함께 고려해야 한다는 점을 배웠습니다.',
           metrics: [{ label: '파이프라인', value: '탐지 + 분류' }, { label: '출력 결과', value: 'bbox + 라벨' }, { label: '서비스 형태', value: 'Gradio API' }],
           githubUrl: '',
-          demoUrl: 'mlPdf'
+          demoUrl: 'mlPdf',
+          pdfFile: 'ML_초급_프로젝트_발표자료.pdf'
         },
         {
           projectTitle: '딥페이크 이미지 탐지 모델',
@@ -99,7 +100,8 @@ window.portfolioProjects = [
           learned: '문제에 대한 솔루션을 찾을 때 정확도만 보는 것이 아니라, 제한된 시간 안에서 효율적으로 구현 가능한 방법을 모색하는 것이 중요하다는 점을 배웠습니다.',
           metrics: [{ label: '파이프라인', value: 'MobileNetV2 분류' }, { label: '출력 결과', value: 'crack 없음 / wide / hairline' }, { label: '서비스 형태', value: 'Streamlit' }],
           githubUrl: '',
-          demoUrl: 'crackPdf'
+          demoUrl: 'crackPdf',
+          pdfFile: '최종프로젝트_B팀_AI 기반 인프라 안전 점검.pdf'
         },
         {
           projectTitle: 'RFP 기반 RAG 질의응답 시스템',
@@ -152,7 +154,8 @@ window.portfolioProjects = [
           learned: '제한된 자원에서는 모든 조합을 탐색하기보다 가설을 명확히 나누고 팀의 실험을 병렬화하는 것이 중요하다는 점을 배웠습니다. 또한 교호작용을 생략한 의사결정의 한계를 인지하고, 실험 조건과 근거를 투명하게 공유해야 팀의 결과를 신뢰성 있게 통합할 수 있음을 체감했습니다.',
           metrics: [{ label: '검색 방식', value: 'Top-k Retrieval' }, { label: '임베딩', value: 'bge-m3' }, { label: 'LLM', value: 'Qwen3-8B' }],
           githubUrl: '',
-          demoUrl: 'midPdf'
+          demoUrl: 'midPdf',
+          pdfFile: '중급_프로젝트_발표자료.pdf'
         },
         {
           projectTitle: '소상공인 맞춤 가게 광고 이미지 생성',
@@ -232,6 +235,7 @@ window.portfolioProjects = [
           learned: '기능을 구현하는 것에서 끝나지 않고 다른 부서와 환경, 호출 방식, 배포 단위를 맞춰야 실제 서비스에 연결된다는 점을 배웠습니다. 기술 구현과 커뮤니케이션이 함께 맞물릴 때 기능이 실행 가능한 형태가 된다는 점을 체감했습니다.',
           metrics: [{ label: 'OCR 엔진', value: 'PaddleOCR' }, { label: '검증 방식', value: '국시원 API' }, { label: '연동 형태', value: 'Docker API' }],
           githubUrl: '',
-          demoUrl: 'carebridgePdf'
+          demoUrl: 'carebridgePdf',
+          pdfFile: 'Carebridge_Certificates_OCR.pdf'
         }
       ]
