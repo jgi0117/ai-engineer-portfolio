@@ -29,7 +29,7 @@ window.portfolioProjects = [
           result: '구조를 변경한 뒤에도 mAP가 0.986에서 0.979로만 감소해, 성능을 크게 낮추지 않으면서 운영 유연성을 확보했습니다.',
           learned: 'AI 모델을 설계할 때는 단순 성능 지표뿐 아니라 신규 class 추가, unknown class 대응, 유지보수 같은 운영적 측면도 함께 고려해야 한다는 점을 배웠습니다.',
           metrics: [{ label: '파이프라인', value: '탐지 + 분류' }, { label: '출력 결과', value: 'bbox + 라벨' }, { label: '서비스 형태', value: 'Gradio API' }],
-          githubUrl: '',
+          githubUrl: 'https://github.com/dudghks5893/healthcare_object_detection',
           demoUrl: 'mlPdf',
           pdfFile: 'ML_초급_프로젝트_발표자료.pdf'
         },
@@ -153,7 +153,7 @@ window.portfolioProjects = [
           result: 'chunk size, overlap, max token, top-k 변경이 성능 향상에 유의미하다는 결과를 도출했습니다. 네 가지 요소를 최종 파이프라인에 통합해 목표로 했던 GPT-5 mini baseline 성능을 달성했습니다.',
           learned: '제한된 자원에서는 모든 조합을 탐색하기보다 가설을 명확히 나누고 팀의 실험을 병렬화하는 것이 중요하다는 점을 배웠습니다. 또한 교호작용을 생략한 의사결정의 한계를 인지하고, 실험 조건과 근거를 투명하게 공유해야 팀의 결과를 신뢰성 있게 통합할 수 있음을 체감했습니다.',
           metrics: [{ label: '검색 방식', value: 'Top-k Retrieval' }, { label: '임베딩', value: 'bge-m3' }, { label: 'LLM', value: 'Qwen3-8B' }],
-          githubUrl: '',
+          githubUrl: 'https://github.com/jgi0117/rag_rfp_analyzer',
           demoUrl: 'midPdf',
           pdfFile: '중급_프로젝트_발표자료.pdf'
         },
@@ -194,7 +194,7 @@ window.portfolioProjects = [
             { label: '서비스 형태', value: 'End-to-End' }
           ],
           isTeamLead: true,
-          githubUrl: '',
+          githubUrl: 'https://github.com/Team3-Cafe/AD-content-generator',
           pdfFile: '코드잇_고급_프로젝트.pdf'
         },
         {
@@ -234,7 +234,7 @@ window.portfolioProjects = [
           result: '요양보호사 자격증 이미지 업로드부터 OCR 인식, 국시원 API 진위 확인, JSON 결과 반환까지 이어지는 API 흐름을 구현했고, Docker 기반으로 백엔드 연동 가능한 형태로 공유했습니다.',
           learned: '기능을 구현하는 것에서 끝나지 않고 다른 부서와 환경, 호출 방식, 배포 단위를 맞춰야 실제 서비스에 연결된다는 점을 배웠습니다. 기술 구현과 커뮤니케이션이 함께 맞물릴 때 기능이 실행 가능한 형태가 된다는 점을 체감했습니다.',
           metrics: [{ label: 'OCR 엔진', value: 'PaddleOCR' }, { label: '검증 방식', value: '국시원 API' }, { label: '연동 형태', value: 'Docker API' }],
-          githubUrl: '',
+          githubUrl: 'https://github.com/jgi0117/carebridge_certificates_OCR',
           demoUrl: 'carebridgePdf',
           pdfFile: 'Carebridge_Certificates_OCR.pdf'
         }
