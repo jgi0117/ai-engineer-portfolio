@@ -25,7 +25,7 @@
   <body>
     <main id="app" class="min-h-screen"></main>
 
-    <script src="./projects-data.js?v=20260823-layout-review"></script>
+    <script src="./projects-data.js?v=20261011-ls-project"></script>
     <script>
       const projects = (window.portfolioProjects || []).sort((a, b) => {
         const endA = a.period.split('~')[1]?.trim() || '';
@@ -43,6 +43,7 @@
       })[character]);
 
       const categoryLabel = (category) => ({
+        ml: 'Data · ML',
         llm: 'LLM · RAG',
         cv: 'Computer Vision',
         genai: 'Generative AI'
@@ -52,6 +53,16 @@
 
       function openPresentation(project) {
         if (!project.pdfFile) return;
+
+        if (!project.pdfFile.toLowerCase().endsWith('.pdf')) {
+          const downloadLink = document.createElement('a');
+          downloadLink.href = pdfUrl(project.pdfFile);
+          downloadLink.download = project.pdfFile;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          downloadLink.remove();
+          return;
+        }
 
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-2 backdrop-blur-sm sm:p-5';
@@ -147,7 +158,7 @@
 
             <nav class="mb-6 flex flex-wrap gap-2" aria-label="프로젝트 분야 필터">
               ${[
-                ['all', '전체'], ['genai', 'Generative AI'], ['llm', 'LLM · RAG'], ['cv', 'Computer Vision']
+                ['all', '전체'], ['ml', 'Data · ML'], ['genai', 'Generative AI'], ['llm', 'LLM · RAG'], ['cv', 'Computer Vision']
               ].map(([key, label]) => `
                 <button type="button" data-filter="${key}"
                   class="rounded-full border px-5 py-2.5 text-sm font-extrabold transition ${activeFilter === key
@@ -244,7 +255,7 @@
                   </div>
                   <div class="mt-8 flex flex-wrap gap-3">
                     ${project.githubUrl ? `<a href="${escapeHtml(project.githubUrl)}" target="_blank" rel="noreferrer" class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">GitHub 보기 ↗</a>` : ''}
-                    ${project.pdfFile ? `<button type="button" data-presentation class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">PPT 자료 보기</button>` : ''}
+                    ${project.pdfFile ? `<button type="button" data-presentation class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">${project.pdfFile.toLowerCase().endsWith('.pdf') ? 'PPT 자료 보기' : 'PPT 다운로드'}</button>` : ''}
                   </div>
                 </div>
                 <div class="grid bg-slate-50 p-4 sm:p-6">

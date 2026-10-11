@@ -1,5 +1,49 @@
 window.portfolioProjects = [
         {
+          projectTitle: '설비 고장 예측 기반 정비 의사결정 지원 시스템',
+          category: 'ml',
+          period: '2026.09.21 ~ 2026.09.30',
+          role: '데이터 구축 및 EDA · 개인 기여도 33.3%',
+          summary: '고장 위험과 센서 이상을 감지하고 재고·입고 예정·조달 및 준비 기간·비용을 함께 계산해 점검·발주·정비 시점 판단을 지원하는 제조 데이터 기반 Dash 시스템입니다.',
+          mainImage: 'ls-maintenance-cover.svg',
+          flowImage: '',
+          serviceFlow: [
+            'Azure PdM 공개 데이터와 가상 운영 데이터를 구축한다',
+            '시간 기준 정합성을 검증하고 미래 정보 누수를 방지해 특징을 생성한다',
+            'LightGBM으로 고장 위험을 예측하고 IF·IQR·3-Sigma로 센서 이상을 탐지한다',
+            '재고·입고 예정·조달 및 준비 기간을 반영해 정비 계획을 계산한다',
+            '비용 시나리오와 제한된 근거를 바탕으로 대응 우선순위를 정한다',
+            'MySQL 운영 계층과 Dash F01~F10 화면에서 의사결정을 지원한다'
+          ],
+          printServiceFlow: ['설비·운영 데이터 구축', '고장 위험·센서 이상 탐지', '재고·조달·비용 계산', '점검·발주·정비 판단'],
+          techStack: [
+            {
+              category: '데이터 분석 · 모델링',
+              items: ['Python', 'Pandas', 'scikit-learn', 'LightGBM', 'Isolation Forest', 'PyTorch']
+            },
+            {
+              category: '서비스 · 데이터베이스',
+              items: ['Dash', 'Plotly', 'Qwen3-1.7B', 'HuggingFace', 'MySQL', 'SQLAlchemy', 'PyMySQL']
+            },
+            {
+              category: '협업 · 설계',
+              items: ['GitHub', 'Notion', 'Figma']
+            }
+          ],
+          problem: '고장 위험만 예측해서는 부품을 제때 준비할 수 있는지, 언제 발주하고 정비해야 하는지 판단하기 어렵습니다. 재고·납기·비용 정보가 분리되어 있어 대응 우선순위가 담당자의 경험에 의존하는 문제도 있었습니다.',
+          solution: '판단 시점 이전 정보만 사용하도록 시간 기준 전처리와 특징 생성을 설계하고, 고장 위험과 센서 이상을 분리해 계산했습니다. 이후 재고·입고 예정·조달 및 준비 기간·비용을 연결해 정비 목표일, 발주 마감일, 대응 여유를 산출했습니다.',
+          result: 'LightGBM은 평균 AUC 0.826, PR-AUC 0.379, Lift 3.89를 기록했고 Isolation Forest는 24시간 Lift 8.45를 기록했습니다. 이를 F01~F10 Dash 화면으로 연결해 위험 확인부터 발주·조치·통계까지 이어지는 MVP를 완성했습니다. 해당 지표는 공개 시뮬레이션 데이터의 오프라인 평가 결과입니다.',
+          learned: '데이터 분석은 모델 점수를 만드는 데서 끝나지 않고 현장이 실제로 대응할 수 있는 조건과 연결되어야 합니다. 공개 센서 데이터와 기능 검증용 합성 운영 데이터를 구분하고, 데이터의 시간 기준과 검증 범위를 투명하게 설명하는 것이 의사결정 신뢰성을 만든다는 점을 확인했습니다.',
+          metrics: [
+            { label: '개인 기여도', value: '33.3%' },
+            { label: 'LightGBM 평균 AUC', value: '0.826' },
+            { label: 'IF 24h Lift', value: '8.45' }
+          ],
+          githubUrl: 'https://github.com/jgi0117/2team_project/',
+          demoUrl: 'lsPpt',
+          pdfFile: 'LS_2조_발표자료.pptx'
+        },
+        {
           projectTitle: '알약 인식 및 분류 모델',
           category: 'cv',
           period: '2026.03.17 ~ 2026.04.02',
