@@ -149,6 +149,7 @@ dialog::backdrop{background:#0008}
 </div>
 <dialog id="dlg"></dialog>
 
+<script src="xlsx.full.min.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -517,7 +518,7 @@ function viewViz(){if(!S.rows.length)return bad("먼저 데이터를 가져오�
  const cur=ST_TABS.find(t=>t[0]===S.v.st)||ST_TABS[0];
  const sc=`<select data-v="scope"><option value="all">전체 누적</option>${S.batches.map(b=>`<option value="${b.id}"${S.v.scope===b.id?" selected":""}>${esc(b.name)}</option>`).join("")}</select>`;
  const body={sum:chSum,miss:()=>chMissBars()+chHeat(),eff:()=>chScatter()+chGroup()+chCorr()||`<div class="chart" style="grid-column:1/-1">${bad("값이 바뀐 입력이 없어요. 입력 조건을 바꿔 가며 실험한 데이터가 있어야 비교할 수 있어요.")}</div>`,trend:chTrend,dist:chHist}[cur[0]]();
- return `<div class="row" style="margin-bottom:10px"><b>범위</b>${sc}<span class="note">${RS().length}행</span><span style="flex:1"></span><button class="btn sm" data-act="csv">누적 표를 CSV로 저장</button></div>
+ return `<div class="row" style="margin-bottom:10px"><b>범위</b>${sc}<span class="note">${RS().length}행</span><span style="flex:1"></span><button class="btn sm" data-act="csv">전체 데이터 CSV</button><button class="btn sm" data-act="xlsx">전체 데이터 XLSX</button></div>
  <div class="subtabs">${ST_TABS.map(t=>`<button class="stab" data-act="st:${t[0]}" aria-current="${t[0]===cur[0]}">${t[1]}</button>`).join("")}</div>
  <div class="purpose">${cur[2]}</div><div class="charts">${body}</div>`}
 
@@ -557,8 +558,14 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]
  else if(a==="conv"){const[r,c]=k.split("|"),row=S.rows.find(x=>x.id===r),col=S.cols.find(x=>x.id===c),x=row.cells[c],to=conv(parseFloat(x.v),x.unit,col.unit);
   if(to!=null){x.v=String(+to.toPrecision(6));delete x.unit;x.edited=true}}
  else if(a==="csv"){const q=s=>`"${String(s).replace(/"/g,'""')}"`,hd=["실험","날짜",...S.cols.map(c=>c.name+(c.unit?` (${c.unit})`:""))];
-  const rows=S.rows.map(r=>[r.label,r.date,...S.cols.map(c=>{const x=cellOf(r,c);if(S.ex[r.id+"|"+c.id])return"";return x.nonnum?x.raw:(x.v==null?"":x.v+(x.unit?" "+x.unit:""))})]);
+  const rows=S.rows.map(r=>[r.label,r.date,...S.cols.map(c=>{const x=cellOf(r,c);return x.nonnum?x.raw:(x.v==null?"":x.v+(x.unit?" "+x.unit:""))})]);
   const blob=new Blob(["﻿"+[hd,...rows].map(r=>r.map(q).join(",")).join("\r\n")],{type:"text/csv;charset=utf-8"}),u=URL.createObjectURL(blob),l=document.createElement("a");l.href=u;l.download="실험표.csv";l.click();setTimeout(()=>URL.revokeObjectURL(u),1000);return}
+ else if(a==="xlsx"){if(!window.XLSX){ERR="XLSX 내보내기 모듈을 불러오지 못했어요. 인터넷 연결을 확인하세요.";render();return}
+  const hd=["실험","날짜",...S.cols.map(c=>c.name+(c.unit?` (${c.unit})`:""))];
+  const rows=S.rows.map(r=>[r.label,r.date,...S.cols.map(c=>{const x=cellOf(r,c);if(x.nonnum)return x.raw;if(x.v==null)return"";if(x.unit)return x.v+" "+x.unit;return isNum(c)?Number(x.v):x.v})]);
+  const ws=XLSX.utils.aoa_to_sheet([hd,...rows]);ws["!cols"]=hd.map((h,i)=>({wch:Math.min(28,Math.max(10,String(h).length+2,...rows.map(r=>String(r[i]??"").length+2)))}));
+  const review=[["실험","항목","점검 유형","메시지","처리 상태"]];allIssues().forEach(i=>{const r=S.rows.find(x=>x.id===i.r),c=S.cols.find(x=>x.id===i.c);review.push([r?.label||"",c?.name||"",TL[i.type]||i.type,i.msg,i.rev==="exclude"?"통계 제외":i.rev==="keep"?"확인 후 유지":"확인 필요"])});
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"전체 데이터");XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(review),"점검 상태");XLSX.writeFile(wb,"실험표_전체데이터.xlsx",{compression:true});return}
  else if(a==="copytm"){const t=$("#tm").textContent,m=$("#cpmsg");try{await navigator.clipboard.writeText(t);m.textContent="복사했어요"}catch(_){const r=document.createRange();r.selectNodeContents($("#tm"));getSelection().removeAllRanges();getSelection().addRange(r);m.textContent="선택했어요. Ctrl+C로 복사하세요"}return}
  save();render()});
 document.addEventListener("change",e=>{const t=e.target;
