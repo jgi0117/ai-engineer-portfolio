@@ -3,57 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="실험 데이터 축적 과정의 실수를 줄이고 실시간 통계와 머신러닝용 데이터셋을 만드는 실험 노트 점검기 소개">
+  <meta name="description" content="실험 노트 점검기의 문제 해결, 장점과 4단계 사용법을 두 페이지로 소개합니다.">
   <meta name="theme-color" content="#102f2b">
-  <title>실험 노트 점검기 · 기능 소개와 사용법</title>
+  <title>실험 노트 점검기 · 2분 소개</title>
   <style>
-    :root{--bg:#f2f5f1;--ink:#132522;--muted:#60706b;--line:#ced9d4;--panel:#fff;--green:#0f6f65;--deep:#102f2b;--mint:#c8eee3;--copper:#bb6d3a;--red:#bf4437;--yellow:#e6aa30}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 Pretendard,"IBM Plex Sans KR","Noto Sans KR","Malgun Gothic",sans-serif}a{color:inherit}.wrap{width:min(1160px,calc(100% - 40px));margin:auto}
-    .top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 0}.brand{text-decoration:none;font-weight:900;letter-spacing:-.03em}.back{color:var(--muted);font-size:14px;text-underline-offset:4px}
-    .hero{padding:74px 0 86px}.eyebrow{margin:0 0 17px;color:var(--green);font-size:12px;font-weight:900;letter-spacing:.2em;text-transform:uppercase}.hero h1{max-width:940px;margin:0;font-size:clamp(48px,7vw,88px);line-height:.98;letter-spacing:-.07em}.hero .lead{max-width:760px;margin:28px 0 0;color:var(--muted);font-size:clamp(18px,2vw,22px);letter-spacing:-.02em}.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 20px;border:1px solid var(--line);border-radius:10px;background:#fff;text-decoration:none;font-weight:900}.btn.main{border-color:var(--green);background:var(--green);color:#fff}.btn:hover{transform:translateY(-1px)}
-    .thesis{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;padding-bottom:96px}.problem,.benefit{border-radius:24px;padding:32px}.problem{grid-row:span 2;background:var(--deep);color:#fff}.benefit{background:var(--panel);border:1px solid var(--line)}.num{display:grid;width:38px;height:38px;place-items:center;border-radius:50%;background:var(--mint);color:var(--deep);font-size:12px;font-weight:900}.problem .num{background:var(--copper);color:#fff}.thesis h2{margin:30px 0 12px;font-size:clamp(27px,3vw,40px);line-height:1.15;letter-spacing:-.045em}.thesis p{margin:0;color:var(--muted)}.problem p{color:#c2d4ce}.accent{color:var(--copper)}
-    .bridge{padding:80px 0;background:var(--deep);color:#fff}.bridge-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}.bridge h2{margin:0;font-size:clamp(36px,5vw,62px);line-height:1.03;letter-spacing:-.055em}.bridge p{margin:0;color:#bad0c9;font-size:18px}.flowline{display:flex;align-items:center;gap:10px;margin-top:24px;color:#8abbb0;font-size:13px;font-weight:800}.flowline b{color:#fff}.flowline i{height:1px;flex:1;background:#3d5e58}
-    .how{padding:102px 0}.how-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:50px}.how h2{margin:0;font-size:clamp(38px,5vw,62px);line-height:1.02;letter-spacing:-.055em}.how-head p{max-width:470px;margin:0;color:var(--muted)}
-    .step{display:grid;grid-template-columns:.95fr 1.05fr;gap:48px;align-items:center;padding:52px 0;border-top:1px solid var(--line)}.step:nth-child(odd) .visual{order:2}.step:nth-child(odd) .copy{order:1}.visual{overflow:hidden;border:1px solid #b9c9c2;border-radius:20px;background:#e6eeea;box-shadow:0 22px 55px rgba(16,47,43,.12)}.visual img{display:block;width:100%;height:auto}.step-no{color:var(--green);font-size:12px;font-weight:900;letter-spacing:.18em}.step h3{margin:12px 0;font-size:clamp(28px,3.5vw,45px);line-height:1.08;letter-spacing:-.05em}.step p{margin:0;color:var(--muted)}.tip{margin-top:18px;padding:14px 16px;border-left:3px solid var(--copper);background:#fff;color:#52635e;font-size:14px}
-    .future{padding:90px 0;background:#e2ece7}.future-card{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;padding:42px;border:1px solid #b9cec5;border-radius:26px;background:#fff}.future h2{margin:0 0 12px;font-size:clamp(33px,4vw,54px);line-height:1.05;letter-spacing:-.055em}.future p{max-width:720px;margin:0;color:var(--muted)}.arrow{font-size:38px;color:var(--green)}
-    .cta{padding:110px 0;text-align:center}.cta h2{margin:0;font-size:clamp(40px,6vw,74px);line-height:1;letter-spacing:-.06em}.cta p{margin:22px auto 30px;max-width:620px;color:var(--muted)}footer{padding:25px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
-    @media(max-width:820px){.thesis,.bridge-grid,.step{grid-template-columns:1fr}.problem{grid-row:auto}.how-head{align-items:start;flex-direction:column}.step:nth-child(n) .visual,.step:nth-child(n) .copy{order:initial}.future-card{grid-template-columns:1fr}.arrow{display:none}}
-    @media(max-width:520px){.wrap{width:min(100% - 24px,1160px)}.back{font-size:12px}.hero{padding:48px 0 62px}.problem,.benefit{padding:24px}.step{gap:24px;padding:38px 0}.future-card{padding:25px}}
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn:hover{transform:none}}
+    :root{--bg:#eef3ef;--ink:#132522;--muted:#61716c;--line:#cbd7d2;--panel:#fff;--green:#0f7066;--deep:#102f2b;--mint:#c9eee4;--copper:#bd6f3b}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Pretendard,"IBM Plex Sans KR","Noto Sans KR","Malgun Gothic",sans-serif}a{color:inherit}.wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+    .page{min-height:100svh;display:flex;flex-direction:column}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 0}.brand{text-decoration:none;font-weight:900;letter-spacing:-.03em}.back{color:var(--muted);font-size:13px;text-underline-offset:4px}
+    .page-one{background:radial-gradient(circle at 90% 5%,rgba(189,111,59,.17),transparent 28rem),var(--bg)}.intro{flex:1;display:grid;grid-template-columns:1.02fr .98fr;gap:48px;align-items:center;padding:34px 0 54px}.eyebrow{margin:0 0 14px;color:var(--green);font-size:11px;font-weight:900;letter-spacing:.19em;text-transform:uppercase}h1{margin:0;font-size:clamp(45px,6.5vw,78px);line-height:.98;letter-spacing:-.068em}.lead{max-width:650px;margin:22px 0 0;color:var(--muted);font-size:18px}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:27px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border:1px solid var(--line);border-radius:9px;background:#fff;text-decoration:none;font-weight:900}.btn.main{border-color:var(--green);background:var(--green);color:#fff}
+    .value{display:grid;gap:12px}.value-card{display:grid;grid-template-columns:42px 1fr;gap:15px;padding:22px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.78)}.value-card.problem{background:var(--deep);color:#fff;border-color:var(--deep)}.badge{display:grid;width:38px;height:38px;place-items:center;border-radius:50%;background:var(--mint);color:var(--deep);font-size:11px;font-weight:900}.problem .badge{background:var(--copper);color:#fff}.value h2{margin:0 0 5px;font-size:21px;line-height:1.18;letter-spacing:-.035em}.value p{margin:0;color:var(--muted);font-size:13px}.problem p{color:#bad0c9}.page-mark{padding:0 0 18px;color:#82908b;font-size:11px;font-weight:900;letter-spacing:.15em}
+    .page-two{background:#fff}.how-head{display:flex;align-items:end;justify-content:space-between;gap:26px;padding:28px 0 20px}.how-head h2{margin:0;font-size:clamp(32px,4vw,50px);line-height:1;letter-spacing:-.055em}.how-head p{max-width:470px;margin:0;color:var(--muted);font-size:13px}.steps{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:18px}.step{display:grid;grid-template-columns:minmax(170px,.9fr) minmax(190px,1.1fr);min-height:0;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#f8faf9}.visual{display:grid;place-items:center;min-height:0;overflow:hidden;background:#e4ece8}.visual img{width:100%;height:100%;object-fit:cover}.copy{display:flex;flex-direction:column;justify-content:center;padding:18px}.step-no{color:var(--green);font-size:10px;font-weight:900;letter-spacing:.15em}.step h3{margin:7px 0;font-size:20px;line-height:1.2;letter-spacing:-.035em}.step p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}.bottom{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:17px 0 20px;border-top:1px solid var(--line)}.bottom p{margin:0;color:var(--muted);font-size:12px}.bottom .btn{flex:none}
+    @media(max-width:900px){.page{min-height:auto}.intro{grid-template-columns:1fr;padding:34px 0 60px}.steps{grid-template-columns:1fr}.step{min-height:260px}.page-two{padding-bottom:20px}}
+    @media(max-width:560px){.wrap{width:min(100% - 24px,1180px)}.top{padding:14px 0}.back{font-size:11px}.intro{gap:32px}.lead{font-size:16px}.value-card{padding:18px}.how-head{align-items:start;flex-direction:column}.step{grid-template-columns:1fr}.visual{aspect-ratio:16/9}.copy{padding:16px}.bottom{align-items:stretch;flex-direction:column}.bottom .btn{width:100%}}
+    @media print{@page{size:A4 landscape;margin:0}.page{width:297mm;height:210mm;min-height:0;overflow:hidden;page-break-after:always}.page:last-child{page-break-after:auto}.top{padding-top:10mm}.intro{padding-block:4mm 10mm}.page-mark{padding-bottom:5mm}.how-head{padding-block:8mm 5mm}.steps{padding-bottom:4mm}.bottom{padding-block:4mm}.btn{min-height:10mm}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   </style>
 </head>
 <body>
-  <header class="wrap top"><a class="brand" href="../index_lab.html">LABORATORY AI</a><a class="back" href="../index_lab.html">← 포트폴리오로 돌아가기</a></header>
-  <main>
-    <section class="wrap hero">
-      <p class="eyebrow">Lab note checker · Project overview</p>
-      <h1>데이터가 쌓일수록,<br>실험실의 다음 판단이 선명해집니다.</h1>
-      <p class="lead">실험 노트 점검기는 기록 단계의 실수를 줄이고, 새 데이터를 추가할 때마다 누적 통계를 바로 보여주며, 향후 머신러닝에 활용할 수 있는 정돈된 데이터셋을 만드는 도구입니다.</p>
-      <div class="hero-actions"><a class="btn main" href="#how">4단계 사용법 보기 ↓</a><a class="btn" href="index.html">데모 바로 실행 ↗</a></div>
-    </section>
+  <section class="page page-one">
+    <header class="wrap top"><a class="brand" href="../index_lab.html">LABORATORY AI</a><a class="back" href="../index_lab.html">← 포트폴리오</a></header>
+    <div class="wrap intro">
+      <div>
+        <p class="eyebrow">Lab note checker · Page 01</p>
+        <h1>실험 데이터,<br>쌓이기 전에<br>점검합니다.</h1>
+        <p class="lead">기록 실수를 줄이고, 누적 통계를 바로 확인하며, 머신러닝으로 확장할 데이터셋을 만듭니다.</p>
+        <div class="actions"><a class="btn main" href="#how">사용법 보기 ↓</a><a class="btn" href="index.html">데모 실행 ↗</a></div>
+      </div>
+      <div class="value" aria-label="문제 해결과 장점">
+        <article class="value-card problem"><span class="badge">P</span><div><h2>문제 해결 · 축적 실수 감소</h2><p>업로드 직후 결측치, 형식 오류, 단위 불일치와 이상치 후보를 찾아 다시 확인할 위치를 보여줍니다.</p></div></article>
+        <article class="value-card"><span class="badge">01</span><div><h2>업로드할 때마다 실시간 통계</h2><p>누적 데이터의 요약, 분포, 추이와 입력·출력 관계를 즉시 다시 계산해 시각화합니다.</p></div></article>
+        <article class="value-card"><span class="badge">02</span><div><h2>CSV·XLSX 다운로드 → ML 확장</h2><p>전체 데이터와 점검 상태를 내려받아, 충분히 쌓이면 품질·공정 결과 예측 모델에 활용할 수 있습니다.</p></div></article>
+      </div>
+    </div>
+    <div class="wrap page-mark">01 / 02 · WHY</div>
+  </section>
 
-    <section class="wrap thesis" aria-label="문제 해결과 장점">
-      <article class="problem"><span class="num">P</span><h2>문제 해결<br><span class="accent">데이터 축적 실수 감소</span></h2><p>실험이 반복될수록 누락된 값, 잘못 적은 단위, 숫자가 아닌 값, 다른 기록과 동떨어진 이상값이 함께 쌓일 수 있습니다. 업로드 직후 결측치·단위 불일치·이상치 후보를 찾아 원자료와 다시 확인할 위치를 보여줍니다.</p></article>
-      <article class="benefit"><span class="num">01</span><h2>누적 통계를<br>실시간 시각화</h2><p>데이터를 새로 업로드할 때마다 평균·범위·분포·입출력 관계와 회차별 추이를 다시 계산해 보여줍니다. 별도의 분석 파일을 매번 만들지 않아도 현재 상태를 바로 확인할 수 있습니다.</p></article>
-      <article class="benefit"><span class="num">02</span><h2>CSV·XLSX로 내려받아<br>머신러닝까지 확장</h2><p>축적된 전체 데이터를 CSV 또는 XLSX로 내려받을 수 있습니다. 데이터가 충분히 쌓이면 전처리된 기록을 바탕으로 공정 결과나 품질을 예측하는 머신러닝 모델 개발로 이어갈 수 있습니다.</p></article>
-    </section>
-
-    <section class="bridge">
-      <div class="wrap bridge-grid"><h2>입력에서 점검,<br>통계와 활용까지.</h2><div><p>사용자는 복잡한 분석 코드를 다루지 않아도 됩니다. 파일을 넣고, 표시된 문제를 확인한 뒤, 누적 결과를 살펴보고 필요한 형식으로 내려받으면 됩니다.</p><div class="flowline"><b>INPUT</b><i></i><b>CHECK</b><i></i><b>VISUALIZE</b><i></i><b>EXPORT</b></div></div></div>
-    </section>
-
-    <section class="wrap how" id="how">
-      <div class="how-head"><div><p class="eyebrow">How to use</p><h2>4개의 화면으로<br>이해하는 사용법</h2></div><p>아래 이미지는 실제 데모 화면의 구조를 단순화한 안내 이미지입니다. 마지막 단계까지 확인한 뒤 실제 데모에서 직접 눌러볼 수 있습니다.</p></div>
-
-      <article class="step"><div class="visual"><img src="guide-01-upload.svg" alt="엑셀 또는 CSV 파일을 업로드하는 입력 화면 예시"></div><div class="copy"><span class="step-no">STEP 01 · INPUT</span><h3>실험 기록을 가져옵니다.</h3><p>정해진 틀의 XLSX·CSV 파일을 선택하거나 표를 붙여 넣습니다. 반복 실험은 기존 데이터 뒤에 계속 누적됩니다.</p><div class="tip">처음이라면 ‘가상 예시 표 가져오기’를 눌러 전체 흐름을 빠르게 체험할 수 있습니다.</div></div></article>
-      <article class="step"><div class="visual"><img src="guide-02-table.svg" alt="업로드한 실험 데이터를 표에서 확인하고 수정하는 화면 예시"></div><div class="copy"><span class="step-no">STEP 02 · REVIEW TABLE</span><h3>표에서 기록을 확인합니다.</h3><p>가져온 열과 단위를 표준 항목에 맞추고, 각 값을 한 표에서 확인합니다. 셀을 직접 수정하거나 새 행을 추가할 수 있으며 변경 내용은 즉시 반영됩니다.</p><div class="tip">붉은 칸은 결측·형식 오류, 주황 칸은 이상값 또는 단위 확인이 필요한 위치를 뜻합니다.</div></div></article>
-      <article class="step"><div class="visual"><img src="guide-03-check.svg" alt="결측치와 이상치 등 점검 결과를 확인하는 화면 예시"></div><div class="copy"><span class="step-no">STEP 03 · QUALITY CHECK</span><h3>실수 가능성이 있는 값을 점검합니다.</h3><p>결측치, 숫자 형식 오류, 단위 불일치, 이상치 후보를 항목별로 보여줍니다. 원자료를 확인해 고치거나, 의도한 값이면 그대로 유지하고 통계 포함 여부를 결정합니다.</p><div class="tip">도구가 정답을 판정하는 것이 아니라, 사람이 다시 확인해야 할 위치를 빠르게 좁혀 줍니다.</div></div></article>
-      <article class="step"><div class="visual"><img src="guide-04-stats.svg" alt="누적 통계를 시각화하고 CSV와 XLSX로 내려받는 화면 예시"></div><div class="copy"><span class="step-no">STEP 04 · VISUALIZE & EXPORT</span><h3>누적 통계를 보고 전체 데이터를 내려받습니다.</h3><p>데이터가 추가될 때마다 요약 통계, 결측 현황, 입력과 출력의 관계, 회차별 추이와 분포가 갱신됩니다. 전체 데이터는 CSV와 XLSX로 내려받을 수 있습니다.</p><div class="tip">XLSX 파일에는 ‘전체 데이터’와 ‘점검 상태’ 시트가 함께 생성되어 이후 분석과 검토에 활용할 수 있습니다.</div></div></article>
-    </section>
-
-    <section class="future"><div class="wrap"><div class="future-card"><div><p class="eyebrow">Next possibility</p><h2>기록 도구에서<br>예측 모델의 학습 데이터로.</h2><p>일관된 입력 조건과 출력 결과가 충분히 쌓이면 공정 결과 예측, 품질 이상 조기 탐지, 다음 실험 조건 추천과 같은 머신러닝 과제로 확장할 수 있습니다.</p></div><span class="arrow">→</span></div></div></section>
-    <section class="wrap cta"><p class="eyebrow">Try the interactive demo</p><h2>이제 직접 사용해 보세요.</h2><p>가상 예시 데이터를 불러오면 실제 데이터를 올리지 않고도 표 확인, 오류 점검, 통계 시각화와 다운로드 흐름을 체험할 수 있습니다.</p><a class="btn main" href="index.html">실험 노트 점검기 실행 ↗</a></section>
-  </main>
-  <footer><div class="wrap">Laboratory AI Portfolio · Lab Note Checker</div></footer>
+  <section class="page page-two" id="how">
+    <div class="wrap how-head"><div><p class="eyebrow">How to use · Page 02</p><h2>4단계면 충분합니다.</h2></div><p>예시 데이터로 체험한 뒤 실제 XLSX·CSV 기록을 누적할 수 있습니다. 이미지는 실제 화면 구조를 단순화한 안내 이미지입니다.</p></div>
+    <div class="wrap steps">
+      <article class="step"><div class="visual"><img src="guide-01-upload.svg" alt="실험 기록 파일 업로드 화면"></div><div class="copy"><span class="step-no">STEP 01 · INPUT</span><h3>기록 가져오기</h3><p>XLSX·CSV 파일을 선택하거나 예시 데이터를 불러옵니다.</p></div></article>
+      <article class="step"><div class="visual"><img src="guide-02-table.svg" alt="누적 데이터를 표에서 확인하는 화면"></div><div class="copy"><span class="step-no">STEP 02 · TABLE</span><h3>표 확인·수정</h3><p>가져온 값과 단위를 확인하고 필요한 셀을 바로 고칩니다.</p></div></article>
+      <article class="step"><div class="visual"><img src="guide-03-check.svg" alt="결측치와 이상치 점검 화면"></div><div class="copy"><span class="step-no">STEP 03 · CHECK</span><h3>오류 후보 점검</h3><p>결측·단위·이상치 후보를 원자료와 대조해 처리합니다.</p></div></article>
+      <article class="step"><div class="visual"><img src="guide-04-stats.svg" alt="통계 시각화와 데이터 다운로드 화면"></div><div class="copy"><span class="step-no">STEP 04 · USE</span><h3>통계 확인·다운로드</h3><p>갱신된 통계를 보고 전체 데이터를 CSV·XLSX로 받습니다.</p></div></article>
+    </div>
+    <div class="wrap bottom"><p>다음 단계: 데이터가 충분히 쌓이면 공정 결과·품질 예측 모델의 학습 데이터로 활용합니다.</p><a class="btn main" href="index.html">실제 데모 체험하기 ↗</a></div>
+  </section>
 </body>
 </html>
