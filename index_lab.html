@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="실험 데이터를 점검하고 설비 운영 의사결정을 돕는 실험실 AI 포트폴리오" />
+    <meta property="og:title" content="실험실 AI 포트폴리오" />
+    <meta property="og:description" content="실험 노트 점검기와 설비 고장 예측 시스템을 중심으로 소개하는 AI 엔지니어 포트폴리오" />
+    <meta property="og:type" content="website" />
+    <title>실험실 AI 포트폴리오</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --font-sans: Inter, Pretendard, "Noto Sans KR", ui-sans-serif, system-ui, sans-serif;
+        --color-ink: #121826;
+        --color-paper: #f5f7fb;
+        --color-accent: #4f46e5;
+      }
+
+      @layer base {
+        html { scroll-behavior: smooth; }
+        body { @apply m-0 bg-paper font-sans text-ink antialiased; }
+        button, a { @apply outline-none; }
+        button:focus-visible, a:focus-visible { @apply ring-2 ring-accent ring-offset-2; }
+      }
+    </style>
+    <style>
+      .print-portfolio { display: none; }
+
+      @media print {
+        @page { size: A4 landscape; margin: 0; }
+        html, body { width: 297mm; margin: 0 !important; background: #eef1f7 !important; }
+        body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        #app { display: none !important; }
+        .print-portfolio { display: block !important; }
+      }
+
+      body.print-preview { margin: 0; background: #dfe3eb; }
+      body.print-preview #app { display: none; }
+      body.print-preview .print-portfolio { display: block; }
+      body.print-preview .pdf-download-hint {
+        position: fixed; right: 20px; bottom: 20px; z-index: 100;
+        border: 0; border-radius: 999px; padding: 13px 20px;
+        background: #121826; color: white; font: 800 13px/1 system-ui, sans-serif;
+        box-shadow: 0 12px 30px rgba(18, 24, 38, .25); cursor: pointer;
+      }
+      .print-page {
+        box-sizing: border-box; position: relative; overflow: hidden;
+        width: 297mm; height: 210mm; margin: 0 auto 10mm; padding: 13mm 15mm;
+        background: #f5f7fb; color: #121826; page-break-after: always; break-after: page;
+        font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", sans-serif;
+      }
+      .print-page:last-child { page-break-after: auto; break-after: auto; }
+      .print-page * { box-sizing: border-box; }
+      .print-kicker { margin: 0; color: #4f46e5; font-size: 10px; font-weight: 900; letter-spacing: .22em; text-transform: uppercase; }
+      .print-cover { display: grid; grid-template-columns: 1.25fr .75fr; gap: 14mm; align-items: center; background: #121826; color: white; }
+      .print-cover::before { content: ""; position: absolute; width: 155mm; height: 155mm; right: -42mm; top: -55mm; border-radius: 50%; background: #5138ee; }
+      .print-cover::after { content: ""; position: absolute; width: 90mm; height: 90mm; right: 12mm; bottom: -48mm; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; }
+      .print-cover-copy { position: relative; z-index: 2; }
+      .print-cover h1 { max-width: 180mm; margin: 9mm 0 6mm; font-size: 30mm; line-height: .88; letter-spacing: -.07em; }
+      .print-cover-lede { max-width: 145mm; margin: 0; color: #bcc5d6; font-size: 5mm; line-height: 1.55; }
+      .print-cover-meta { display: flex; gap: 10mm; margin-top: 17mm; }
+      .print-cover-meta span { display: grid; gap: 1mm; color: #8e9bb2; font-size: 3mm; font-weight: 700; }
+      .print-cover-meta strong { color: white; font-size: 5mm; }
+      .print-cover-index { position: relative; z-index: 2; align-self: end; justify-self: end; color: rgba(255,255,255,.16); font-size: 52mm; font-weight: 950; line-height: .75; letter-spacing: -.09em; }
+      .print-toc h2 { margin: 3mm 0 6mm; font-size: 13mm; line-height: 1; letter-spacing: -.055em; }
+      .print-toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+      .print-toc-item { display: grid; grid-template-columns: 11mm 1fr auto; gap: 3mm; align-items: center; min-height: 29mm; padding: 3.5mm; border: 1px solid #dfe4ed; border-radius: 4mm; background: white; }
+      .print-toc-number { color: #4f46e5; font-size: 5mm; font-weight: 950; }
+      .print-toc-title { margin: 0 0 1.3mm; font-size: 4.2mm; font-weight: 900; letter-spacing: -.03em; }
+      .print-toc-title a { color: inherit; text-decoration: none; }
+      .print-toc-summary { margin: 0; color: #657086; font-size: 2.55mm; line-height: 1.35; }
+      .print-toc-category { align-self: start; padding: 1.5mm 2.2mm; border-radius: 99px; background: #eef0ff; color: #4f46e5; font-size: 2.1mm; font-weight: 900; }
+      .print-project { display: grid; grid-template-rows: auto minmax(0,1fr) auto auto; gap: 4mm; }
+      .print-project-top { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 8mm; }
+      .print-project h2 { max-width: 205mm; margin: 2.5mm 0 2mm; font-size: 12mm; line-height: 1.02; letter-spacing: -.055em; }
+      .print-project-summary { max-width: 205mm; margin: 0; color: #637087; font-size: 3.5mm; line-height: 1.5; }
+      .print-page-number { color: #d5dae4; font-size: 17mm; font-weight: 950; line-height: 1; }
+      .print-project-body { display: grid; grid-template-columns: 1.02fr .98fr; gap: 5mm; min-height: 0; }
+      .print-visual { display: grid; grid-template-rows: 1fr auto; gap: 3mm; min-height: 0; padding: 5mm; border-radius: 7mm; background: #e9eafd; }
+      .print-visual-frame { display: grid; place-items: center; min-height: 0; overflow: hidden; border-radius: 5mm; background: white; }
+      .print-visual-frame img { display: block; width: 100%; height: 100%; max-height: 68mm; object-fit: contain; }
+      .print-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2mm; }
+      .print-metric { min-width: 0; padding: 3mm; border-radius: 3mm; background: white; }
+      .print-metric:first-child { background: #5138ee; color: white; }
+      .print-metric span { display: block; margin-bottom: 1mm; color: #8a95a8; font-size: 2.3mm; font-weight: 800; }
+      .print-metric:first-child span { color: #c8c2ff; }
+      .print-metric strong { display: block; font-size: 3.2mm; line-height: 1.25; }
+      .print-insights { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; min-height: 0; }
+      .print-insight { position: relative; overflow: hidden; padding: 3.5mm; border: 1px solid #dfe4ed; border-radius: 4mm; background: white; }
+      .print-insight::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 1.2mm; background: var(--accent); }
+      .print-insight small { color: var(--accent); font-size: 2.2mm; font-weight: 950; letter-spacing: .12em; }
+      .print-insight h3 { margin: 1.2mm 0; font-size: 3.8mm; }
+      .print-insight p { margin: 0; color: #5f697d; font-size: 2.4mm; line-height: 1.42; }
+      .print-flow { display: grid; grid-template-columns: 22mm 1fr; gap: 3mm; align-items: center; min-height: 18mm; padding: 3mm 4mm; border-radius: 4mm; background: #121826; color: white; }
+      .print-flow-label { display: grid; gap: 1mm; }
+      .print-flow-label small { color: #9d92ff; font-size: 2.1mm; font-weight: 950; letter-spacing: .16em; }
+      .print-flow-label strong { font-size: 3.3mm; }
+      .print-flow-steps { display: grid; grid-template-columns: repeat(var(--step-count), minmax(0,1fr)); align-items: stretch; min-width: 0; }
+      .print-flow-step { position: relative; display: grid; grid-template-columns: 6mm 1fr; gap: 2mm; align-items: center; min-width: 0; padding: 1.6mm 4mm 1.6mm 2mm; border-left: 1px solid rgba(255,255,255,.13); }
+      .print-flow-step:not(:last-child)::after { content: "›"; position: absolute; right: 1mm; top: 50%; color: #8b80ff; font-size: 5mm; font-weight: 900; transform: translateY(-54%); }
+      .print-flow-step span { display: grid; width: 6mm; height: 6mm; place-items: center; border-radius: 50%; background: #5138ee; font-size: 2.1mm; font-weight: 950; }
+      .print-flow-step b { min-width: 0; font-size: 2.35mm; line-height: 1.3; }
+      .print-project-footer { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr) auto; gap: 4mm; align-items: center; padding-top: 3mm; border-top: 1px solid #dce1e9; }
+      .print-project-meta { min-width: 0; font-size: 2.45mm; font-weight: 850; line-height: 1.3; }
+      .print-tech { display: flex; flex-wrap: wrap; gap: 1.5mm; min-width: 0; }
+      .print-tech span { padding: 1.2mm 2mm; border-radius: 99px; background: #e9edf4; color: #4b5568; font-size: 2.15mm; font-weight: 800; }
+      .print-github { color: #4f46e5; font-size: 2.7mm; font-weight: 900; text-decoration: none; }
+      @media screen { body.print-preview .print-page { box-shadow: 0 15px 45px rgba(18,24,38,.15); } }
+      @media print { .pdf-download-hint { display: none !important; } .print-page { margin: 0; } }
+    </style>
+  </head>
+  <body>
+    <main id="app" class="min-h-screen"></main>
+
+    <script src="./projects-data.js?v=20261011-ls-field-v2"></script>
+    <script>
+      const projects = (window.portfolioProjects || []).sort((a, b) => {
+        const endA = a.period.split('~')[1]?.trim() || '';
+        const endB = b.period.split('~')[1]?.trim() || '';
+        return endB.localeCompare(endA);
+      });
+
+      const app = document.getElementById('app');
+      let view = 'list';
+      let selected = 0;
+      let activeFilter = 'all';
+
+      const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+
+      const categoryLabel = (category) => ({
+        ml: 'Data · ML',
+        llm: 'LLM · RAG',
+        cv: 'Computer Vision',
+        genai: 'Generative AI'
+      })[category] || 'AI Project';
+      const imageUrl = (fileName) => fileName ? `./public/images/${encodeURIComponent(fileName)}` : '';
+      const pdfUrl = (fileName) => fileName ? `./public/${encodeURIComponent(fileName)}` : '';
+
+      function renderPrintPortfolio() {
+        document.title = 'AI Engineer Portfolio';
+        document.body.classList.add('print-preview');
+        const printRoot = document.createElement('main');
+        printRoot.className = 'print-portfolio';
+        printRoot.innerHTML = `
+          <section class="print-page print-cover">
+            <div class="print-cover-copy">
+              <p class="print-kicker" style="color:#9d92ff">AI ENGINEER · PROJECT PORTFOLIO</p>
+              <h1>Ideas into<br />AI Systems.</h1>
+              <p class="print-cover-lede">컴퓨터 비전부터 생성형 AI와 RAG까지, 문제를 정의하고 실제로 작동하는 서비스로 구현한 프로젝트를 소개합니다.</p>
+              <div class="print-cover-meta">
+                <span>PROJECTS<strong>${String(projects.length).padStart(2, '0')}</strong></span>
+                <span>FOCUS<strong>CV · LLM · GenAI</strong></span>
+                <span>PORTFOLIO<strong>2026</strong></span>
+              </div>
+            </div>
+            <div class="print-cover-index">AI<br />ENG</div>
+          </section>
+          <section class="print-page print-toc">
+            <p class="print-kicker">Selected Work</p>
+            <h2>Project Index</h2>
+            <div class="print-toc-grid">
+              ${projects.map((project, index) => `
+                <article class="print-toc-item">
+                  <span class="print-toc-number">${String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h3 class="print-toc-title">${project.githubUrl ? `<a href="${escapeHtml(project.githubUrl)}">${escapeHtml(project.projectTitle)} ↗</a>` : escapeHtml(project.projectTitle)}</h3>
+                    <p class="print-toc-summary">${escapeHtml(project.summary)}</p>
+                  </div>
+                  <span class="print-toc-category">${categoryLabel(project.category)}</span>
+                </article>
+              `).join('')}
+            </div>
+          </section>
+          ${projects.map((project, index) => {
+            const insightCards = [
+              ['01 · PROBLEM', '문제 정의', project.problem, '#f43f5e'],
+              ['02 · APPROACH', '해결 방법', project.solution, '#4f46e5'],
+              ['03 · OUTCOME', '결과', project.result, '#10b981'],
+              ['04 · LEARNING', '배운 점', project.learned, '#f59e0b']
+            ];
+            const printFlow = project.printServiceFlow || project.serviceFlow || [];
+            return `
+              <section class="print-page print-project">
+                <header class="print-project-top">
+                  <div>
+                    <p class="print-kicker">${categoryLabel(project.category)}${project.isTeamLead ? ' · TEAM LEAD' : ''}</p>
+                    <h2>${escapeHtml(project.projectTitle)}</h2>
+                    <p class="print-project-summary">${escapeHtml(project.summary)}</p>
+                  </div>
+                  <span class="print-page-number">${String(index + 1).padStart(2, '0')}</span>
+                </header>
+                <div class="print-project-body">
+                  <div class="print-visual">
+                    <div class="print-visual-frame"><img src="${imageUrl(project.mainImage)}" alt="" /></div>
+                    <div class="print-metrics">
+                      ${project.metrics.slice(0, 3).map((metric) => `<div class="print-metric"><span>${escapeHtml(metric.label)}</span><strong>${escapeHtml(metric.value)}</strong></div>`).join('')}
+                    </div>
+                  </div>
+                  <div class="print-insights">
+                    ${insightCards.map(([number, title, copy, color]) => `
+                      <article class="print-insight" style="--accent:${color}">
+                        <small>${number}</small><h3>${title}</h3><p>${escapeHtml(copy)}</p>
+                      </article>
+                    `).join('')}
+                  </div>
+                </div>
+                <div class="print-flow">
+                  <div class="print-flow-label"><small>PROCESS</small><strong>서비스 흐름</strong></div>
+                  <div class="print-flow-steps" style="--step-count:${Math.max(printFlow.length, 1)}">
+                    ${printFlow.map((step, stepIndex) => `
+                      <div class="print-flow-step"><span>${String(stepIndex + 1).padStart(2, '0')}</span><b>${escapeHtml(step)}</b></div>
+                    `).join('')}
+                  </div>
+                </div>
+                <footer class="print-project-footer">
+                  <span class="print-project-meta">${escapeHtml(project.period)} · ${escapeHtml(project.role)}</span>
+                  <div class="print-tech">${techItems(project).slice(0, 9).map((item) => `<span>${escapeHtml(item.name === 'Git' ? 'GitHub' : item.name)}</span>`).join('')}</div>
+                  ${project.githubUrl ? `<a class="print-github" href="${escapeHtml(project.githubUrl)}">GitHub 저장소 열기 ↗</a>` : '<span></span>'}
+                </footer>
+              </section>
+            `;
+          }).join('')}
+          <button class="pdf-download-hint" type="button" onclick="window.print()">PDF로 저장</button>
+        `;
+        document.body.appendChild(printRoot);
+        const previewPage = Number(new URLSearchParams(location.search).get('page'));
+        if (previewPage > 0) {
+          printRoot.querySelectorAll('.print-page').forEach((page, index) => {
+            page.style.display = index === previewPage - 1 ? '' : 'none';
+          });
+        }
+      }
+
+      function openPresentation(project) {
+        if (!project.pdfFile) return;
+        const fileUrl = new URL(pdfUrl(project.pdfFile), window.location.href).href;
+        const presentationUrl = project.pdfFile.toLowerCase().endsWith('.pdf')
+          ? `${fileUrl}#view=FitH&toolbar=0&navpanes=0`
+          : `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-2 backdrop-blur-sm sm:p-5';
+        modal.innerHTML = `
+          <section role="dialog" aria-modal="true" aria-labelledby="presentation-title" class="flex h-[96dvh] w-full max-w-7xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:h-[92dvh] sm:rounded-3xl">
+            <header class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 px-4 py-3 sm:px-6">
+              <div class="min-w-0">
+                <p class="text-[10px] font-black tracking-[0.18em] text-indigo-500">PRESENTATION</p>
+                <h2 id="presentation-title" class="truncate text-sm font-black text-ink sm:text-base">${escapeHtml(project.projectTitle)}</h2>
+              </div>
+              <button type="button" data-close-presentation class="grid size-10 shrink-0 place-items-center rounded-full bg-slate-100 text-xl font-bold text-slate-600 transition hover:bg-slate-200 hover:text-ink" aria-label="PPT 닫기">×</button>
+            </header>
+            <iframe src="${presentationUrl}" title="${escapeHtml(project.projectTitle)} PPT 자료" class="min-h-0 w-full flex-1 bg-slate-100"></iframe>
+          </section>
+        `;
+
+        const closeButton = modal.querySelector('[data-close-presentation]');
+        const previousOverflow = document.body.style.overflow;
+        const closeModal = () => {
+          document.removeEventListener('keydown', handleEscape);
+          document.body.style.overflow = previousOverflow;
+          modal.remove();
+        };
+        const handleEscape = (event) => {
+          if (event.key === 'Escape') closeModal();
+        };
+
+        modal.addEventListener('click', (event) => {
+          if (event.target === modal) closeModal();
+        });
+        closeButton.addEventListener('click', closeModal);
+        document.addEventListener('keydown', handleEscape);
+        document.body.style.overflow = 'hidden';
+        document.body.appendChild(modal);
+        closeButton.focus();
+      }
+      const palettes = [
+        { surface: 'bg-indigo-50', ink: 'text-indigo-700', line: 'group-hover:border-indigo-300', badge: 'bg-indigo-600' },
+        { surface: 'bg-cyan-50', ink: 'text-cyan-700', line: 'group-hover:border-cyan-300', badge: 'bg-cyan-600' },
+        { surface: 'bg-orange-50', ink: 'text-orange-700', line: 'group-hover:border-orange-300', badge: 'bg-orange-500' },
+        { surface: 'bg-violet-50', ink: 'text-violet-700', line: 'group-hover:border-violet-300', badge: 'bg-violet-600' },
+        { surface: 'bg-emerald-50', ink: 'text-emerald-700', line: 'group-hover:border-emerald-300', badge: 'bg-emerald-600' }
+      ];
+
+      const canonicalTechLogos = {};
+      projects.forEach((project) => project.techStack.forEach((group) => {
+        const items = typeof group === 'string' ? [group] : group.items;
+        items.forEach((technology) => {
+          const item = typeof technology === 'string' ? { name: technology } : technology;
+          if (item.logo && !canonicalTechLogos[item.name]) canonicalTechLogos[item.name] = item.logo;
+        });
+      }));
+
+      const techAliases = {
+        OpenAI: 'OpenAI API',
+        GCP: 'GCP',
+        GitHub: 'GitHub'
+      };
+
+      const brandIconUrls = {
+        'Stable Diffusion': 'https://cdn.simpleicons.org/stabilityai',
+        ControlNet: 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20width%3D%2224%22%20height%3D%2224%22%20rx%3D%225%22%20fill%3D%22%236d5dfc%22%2F%3E%3Cpath%20d%3D%22M5%207h6v4H5V7Zm8%206h6v4h-6v-4ZM9%209h6v6H9V9Z%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fsvg%3E',
+        Miro: 'https://cdn.simpleicons.org/miro/F7C922'
+      };
+
+      function techItems(project) {
+        const items = project.techStack.flatMap((group) => typeof group === 'string' ? [group] : group.items);
+        return items.map((item) => typeof item === 'string' ? { name: item } : item)
+          .map((item) => ({
+            ...item,
+            logo: item.logo || canonicalTechLogos[item.name] || canonicalTechLogos[techAliases[item.name]] || brandIconUrls[item.name]
+          }))
+          .filter((item, index, all) => all.findIndex((candidate) => candidate.name === item.name) === index);
+      }
+
+      function renderList() {
+        const maintenanceIndex = projects.findIndex((project) => project.projectTitle.includes('설비 고장 예측'));
+        const maintenance = projects[maintenanceIndex];
+        const secondary = projects
+          .map((project, index) => ({ project, index }))
+          .filter(({ index }) => index !== maintenanceIndex);
+
+        document.title = '실험실 AI 포트폴리오';
+        app.innerHTML = `
+          <div class="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
+            <header class="mb-10 flex flex-col gap-7 border-b border-slate-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p class="mb-4 text-xs font-black tracking-[0.24em] text-emerald-700 uppercase">Laboratory AI · Selected Work</p>
+                <h1 class="max-w-4xl text-5xl leading-[0.95] font-black tracking-[-0.06em] text-balance sm:text-7xl">
+                  실험실 AI 포트폴리오
+                </h1>
+                <p class="mt-5 max-w-3xl text-base leading-7 text-slate-500 sm:text-lg">실험 기록의 신뢰도를 높이고, 설비 운영의 다음 결정을 더 빠르게 만드는 두 가지 핵심 프로젝트를 소개합니다.</p>
+              </div>
+              <div class="flex shrink-0 flex-wrap gap-2">
+                <a href="#featured" class="rounded-full bg-ink px-5 py-2.5 text-sm font-black text-white">핵심 프로젝트 2</a>
+                <a href="./index.html" class="rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-black text-slate-500 transition hover:border-slate-400 hover:text-ink">전체 포트폴리오 ↗</a>
+              </div>
+            </header>
+
+            <section id="featured" class="grid gap-6 lg:grid-cols-2" aria-label="핵심 프로젝트">
+              <a href="./lab-note-checker/index.html" target="_blank" rel="noreferrer" class="group flex min-h-[650px] flex-col overflow-hidden rounded-[2rem] border border-emerald-200 bg-[#102f2b] text-left text-white shadow-xl shadow-emerald-950/10 transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                <span class="relative block h-[360px] overflow-hidden border-b border-white/10 bg-[#eaf1ee] sm:h-[410px]">
+                  <iframe src="./lab-note-checker/index.html" title="실험 노트 점검기 미리보기" tabindex="-1" loading="lazy" class="pointer-events-none h-[820px] w-[150%] origin-top-left scale-[.667] border-0 bg-[#f4f6f5]"></iframe>
+                  <span class="absolute inset-0 bg-gradient-to-t from-[#102f2b]/40 via-transparent to-transparent"></span>
+                  <span class="absolute top-5 left-5 rounded-full bg-emerald-300 px-3 py-1.5 text-[11px] font-black tracking-wider text-emerald-950 shadow-sm">INTERACTIVE DEMO</span>
+                  <span class="absolute top-5 right-5 text-xs font-black tracking-[.18em] text-emerald-800">CORE 01</span>
+                </span>
+                <span class="flex flex-1 flex-col p-7 sm:p-9">
+                  <span class="mb-3 text-xs font-black tracking-[.16em] text-emerald-300 uppercase">Laboratory Data Quality</span>
+                  <span class="block text-3xl leading-tight font-black tracking-[-.045em] sm:text-4xl">실험 노트 점검기</span>
+                  <span class="mt-4 block text-sm leading-7 text-emerald-50/70 sm:text-base">CSV와 직접 입력 기록을 누적하고, 결측·단위 불일치·이상값 후보를 찾아 통계와 그래프로 확인합니다. 서버 없이 브라우저에서 직접 체험할 수 있습니다.</span>
+                  <span class="mt-auto flex items-center justify-between gap-4 pt-7">
+                    <span class="text-xs font-bold text-emerald-100/60">CSV · Data validation · Statistics</span>
+                    <span class="grid size-11 place-items-center rounded-full bg-emerald-300 text-xl font-black text-emerald-950 transition group-hover:translate-x-1">↗</span>
+                  </span>
+                </span>
+              </a>
+
+              ${maintenance ? `
+              <button type="button" data-project="${maintenanceIndex}" class="group flex min-h-[650px] w-full flex-col overflow-hidden rounded-[2rem] border border-indigo-200 bg-white text-left shadow-xl shadow-indigo-950/10 transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                <span class="relative grid h-[360px] place-items-center overflow-hidden bg-indigo-50 p-3 sm:h-[410px] sm:p-6">
+                  <span class="absolute top-5 left-5 z-10 rounded-full bg-indigo-600 px-3 py-1.5 text-[11px] font-black tracking-wider text-white shadow-sm">DECISION SUPPORT</span>
+                  <span class="absolute top-5 right-5 z-10 text-xs font-black tracking-[.18em] text-indigo-700">CORE 02</span>
+                  <img src="${imageUrl(maintenance.mainImage)}" alt="${escapeHtml(maintenance.projectTitle)} 대시보드" class="h-full w-full object-contain transition duration-500 group-hover:scale-[1.025]" />
+                </span>
+                <span class="flex flex-1 flex-col p-7 sm:p-9">
+                  <span class="mb-3 text-xs font-black tracking-[.16em] text-indigo-600 uppercase">Predictive Maintenance</span>
+                  <span class="block text-3xl leading-tight font-black tracking-[-.045em] sm:text-4xl">${escapeHtml(maintenance.projectTitle)}</span>
+                  <span class="mt-4 block text-sm leading-7 text-slate-500 sm:text-base">${escapeHtml(maintenance.summary)}</span>
+                  <span class="mt-6 grid grid-cols-3 gap-2 border-y border-slate-100 py-4">
+                    ${maintenance.metrics.slice(0, 3).map((metric) => `<span><small class="block text-[10px] font-bold text-slate-400">${escapeHtml(metric.label)}</small><strong class="mt-1 block text-sm font-black">${escapeHtml(metric.value)}</strong></span>`).join('')}
+                  </span>
+                  <span class="mt-auto flex items-center justify-between gap-4 pt-6">
+                    <span class="text-xs font-bold text-slate-400">상세 문제 정의 · 구현 흐름 · 기술 스택</span>
+                    <span class="grid size-11 place-items-center rounded-full bg-indigo-600 text-xl font-black text-white transition group-hover:translate-x-1">↗</span>
+                  </span>
+                </span>
+              </button>` : ''}
+            </section>
+
+            <section class="mt-16 border-t border-slate-200 pt-8" aria-labelledby="more-projects">
+              <div class="mb-5 flex items-end justify-between gap-5">
+                <div><p class="mb-2 text-[11px] font-black tracking-[.2em] text-slate-400 uppercase">Additional work</p><h2 id="more-projects" class="text-2xl font-black tracking-[-.035em]">더 살펴볼 프로젝트</h2></div>
+                <span class="text-xs font-bold text-slate-400">관심 있는 경우에만 열어보세요</span>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                ${secondary.map(({ project, index }) => `
+                  <button type="button" data-project="${index}" class="group grid min-h-32 grid-cols-[92px_1fr] overflow-hidden rounded-2xl border border-slate-200 bg-white text-left transition hover:border-slate-400 hover:shadow-lg">
+                    <span class="grid place-items-center bg-slate-50 p-3"><img src="${imageUrl(project.mainImage)}" alt="" loading="lazy" class="h-full w-full object-contain opacity-80 transition group-hover:opacity-100" /></span>
+                    <span class="flex min-w-0 flex-col justify-center p-4"><small class="mb-1 font-black text-slate-400">${categoryLabel(project.category)}</small><strong class="line-clamp-2 leading-snug tracking-tight">${escapeHtml(project.projectTitle)}</strong><span class="mt-2 text-[11px] font-black text-slate-400 group-hover:text-accent">VIEW CASE ↗</span></span>
+                  </button>
+                `).join('')}
+              </div>
+            </section>
+
+            <footer class="mt-14 flex flex-col gap-4 border-t border-slate-200 py-7 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+              <span>실험실 AI 포트폴리오 · 2026</span>
+              <span>핵심을 먼저, 세부 프로젝트는 선택적으로.</span>
+            </footer>
+          </div>
+        `;
+
+        document.querySelectorAll('[data-project]').forEach((button) => button.addEventListener('click', () => {
+          selected = Number(button.dataset.project);
+          view = 'detail';
+          history.pushState({ project: selected }, '', `#project-${selected + 1}`);
+          renderDetail();
+          window.scrollTo(0, 0);
+        }));
+      }
+
+      function renderDetail() {
+        const project = projects[selected];
+        if (!project) return renderList();
+        const stacks = techItems(project);
+        document.title = `${project.projectTitle} — AI Engineer`;
+
+        app.innerHTML = `
+          <div class="mx-auto w-full max-w-7xl px-3 py-3 sm:px-6 sm:py-6">
+            <nav class="sticky top-3 z-30 mb-4 flex items-center justify-between rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-lg shadow-slate-900/5 backdrop-blur-xl">
+              <button type="button" data-back class="rounded-xl px-4 py-3 text-sm font-black hover:bg-slate-100">← LIST</button>
+              <span class="hidden text-xs font-black tracking-[0.16em] text-slate-400 sm:block">PROJECT ${String(selected + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}</span>
+              <div class="flex gap-1">
+                <button type="button" data-move="-1" class="rounded-xl px-4 py-3 text-sm font-black hover:bg-slate-100" aria-label="이전 프로젝트">← PREV</button>
+                <button type="button" data-move="1" class="rounded-xl px-4 py-3 text-sm font-black hover:bg-slate-100" aria-label="다음 프로젝트">NEXT →</button>
+              </div>
+            </nav>
+
+            <article class="grid gap-4">
+              <header class="grid overflow-hidden rounded-[2rem] bg-ink text-white lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,.95fr)]">
+                <div class="flex flex-col justify-center p-7 sm:p-10 lg:p-12">
+                  <div class="mb-8 flex flex-wrap items-center gap-3">
+                    <span class="rounded-full border border-white/20 px-3 py-1 text-xs font-black tracking-wider">${categoryLabel(project.category)}</span>
+                    ${project.isTeamLead ? '<span class="rounded-full bg-amber-400 px-3 py-1 text-xs font-black text-amber-950">♛ TEAM LEAD</span>' : ''}
+                  </div>
+                  <h1 class="max-w-4xl text-4xl leading-[1.05] font-black tracking-[-0.055em] text-balance sm:text-6xl">${escapeHtml(project.projectTitle)}</h1>
+                  <p class="mt-6 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg">${escapeHtml(project.summary)}</p>
+                  <div class="mt-8 grid gap-3 sm:grid-cols-2">
+                    <span class="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300"><b class="mb-1 block text-xs text-white">기간</b>${escapeHtml(project.period)}</span>
+                    <span class="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300"><b class="mb-1 block text-xs text-white">담당 역할</b>${escapeHtml(project.role)}</span>
+                  </div>
+                  <div class="mt-8 flex flex-wrap gap-3">
+                    ${project.githubUrl ? `<a href="${escapeHtml(project.githubUrl)}" target="_blank" rel="noreferrer" class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">GitHub 보기 ↗</a>` : ''}
+                    ${project.pdfFile ? `<button type="button" data-presentation class="rounded-xl bg-white px-5 py-3 text-sm font-black text-ink transition hover:bg-indigo-100">PPT 자료 보기</button>` : ''}
+                  </div>
+                </div>
+                <div class="grid bg-slate-50 p-4 sm:p-6">
+                  <div class="grid min-h-72 place-items-center overflow-hidden rounded-3xl bg-white p-5 shadow-inner sm:min-h-96 sm:p-8">
+                    <img src="${imageUrl(project.mainImage)}" alt="${escapeHtml(project.projectTitle)} 대표 이미지" class="max-h-96 w-full object-contain" />
+                  </div>
+                  <div class="mt-4 grid grid-cols-3 gap-2">
+                    ${project.metrics.slice(0, 3).map((metric, metricIndex) => `
+                      <div class="min-w-0 rounded-2xl ${metricIndex === 0 ? 'bg-[#5138ee] text-white' : 'bg-white text-ink'} p-4 shadow-sm">
+                        <span class="block text-[10px] font-bold ${metricIndex === 0 ? 'text-indigo-200' : 'text-slate-400'}">${escapeHtml(metric.label)}</span>
+                        <strong class="mt-2 block text-sm leading-tight font-black tracking-tight sm:text-base">${escapeHtml(metric.value)}</strong>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </header>
+
+              <section class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                ${[
+                  ['01', '문제 정의', project.problem, 'bg-rose-500', '문제'],
+                  ['02', '해결 방법', project.solution, 'bg-indigo-500', '접근'],
+                  ['03', '결과', project.result, 'bg-emerald-500', '성과'],
+                  ['04', '배운 점', project.learned, 'bg-amber-500', '회고']
+                ].map(([number, title, copy, accent, tag]) => `
+                  <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <span class="absolute inset-x-0 top-0 h-1.5 ${accent}"></span>
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-black tracking-[0.18em] text-slate-400">${number}</span>
+                      <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black text-slate-500">${tag}</span>
+                    </div>
+                    <h2 class="mt-4 text-2xl font-black tracking-tight">${title}</h2>
+                    <p class="mt-4 text-sm leading-6 text-slate-600">${escapeHtml(copy)}</p>
+                  </div>
+                `).join('')}
+              </section>
+
+              <section class="grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
+                <div class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-8">
+                  <p class="text-xs font-black tracking-[0.18em] text-indigo-500">PROCESS</p>
+                  <h2 class="mt-3 text-2xl font-black tracking-tight">서비스 흐름</h2>
+                  <ol class="mt-6 grid gap-2">
+                    ${(project.serviceFlow || []).map((step, index) => `
+                      <li class="flex items-center gap-4 rounded-2xl bg-slate-50 p-4">
+                        <span class="grid size-9 shrink-0 place-items-center rounded-full bg-ink text-xs font-black text-white">${String(index + 1).padStart(2, '0')}</span>
+                        <strong class="text-sm leading-6">${escapeHtml(step)}</strong>
+                      </li>
+                    `).join('')}
+                  </ol>
+                  ${project.flowImage && project.flowImage !== 'image_flow_caregiver_verification.png' ? `
+                    <img src="${imageUrl(project.flowImage)}" alt="${escapeHtml(project.projectTitle)} 서비스 흐름도" loading="lazy" class="mt-6 w-full rounded-2xl border border-slate-200 bg-slate-50 object-contain" />
+                  ` : ''}
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-8">
+                  <p class="text-xs font-black tracking-[0.18em] text-indigo-500">TECH STACK</p>
+                  <h2 class="mt-3 text-2xl font-black tracking-tight">사용 기술</h2>
+                  <div class="mt-6 flex flex-wrap gap-2">
+                    ${stacks.map((item) => `
+                      <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-extrabold">
+                        ${item.logo ? `<img src="${escapeHtml(item.logo)}" alt="" class="size-5 object-contain" />` : ''}
+                        ${escapeHtml(item.name === 'Git' ? 'GitHub' : item.name)}
+                      </span>
+                    `).join('')}
+                  </div>
+                </div>
+              </section>
+            </article>
+          </div>
+        `;
+
+        document.querySelector('[data-back]').addEventListener('click', () => {
+          history.pushState({}, '', location.pathname);
+          view = 'list';
+          renderList();
+          window.scrollTo(0, 0);
+        });
+
+        document.querySelectorAll('[data-move]').forEach((button) => button.addEventListener('click', () => {
+          selected = (selected + Number(button.dataset.move) + projects.length) % projects.length;
+          history.replaceState({ project: selected }, '', `#project-${selected + 1}`);
+          renderDetail();
+          window.scrollTo(0, 0);
+        }));
+
+        document.querySelector('[data-presentation]')?.addEventListener('click', () => openPresentation(project));
+      }
+
+      function renderFromLocation() {
+        const match = location.hash.match(/^#project-(\d+)$/);
+        if (match) {
+          selected = Math.min(Math.max(Number(match[1]) - 1, 0), projects.length - 1);
+          view = 'detail';
+          renderDetail();
+        } else {
+          view = 'list';
+          renderList();
+        }
+      }
+
+      window.addEventListener('popstate', renderFromLocation);
+      if (new URLSearchParams(location.search).has('print')) {
+        renderPrintPortfolio();
+      } else {
+        renderFromLocation();
+      }
+    </script>
+  </body>
+</html>
