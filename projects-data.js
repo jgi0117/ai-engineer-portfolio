@@ -40,7 +40,7 @@ window.portfolioProjects = [
           ],
           githubUrl: 'https://github.com/jgi0117/2team_project/',
           demoUrl: 'lsPpt',
-          pdfFile: 'LS_2조_발표자료.pptx'
+          pdfFile: 'LS_2조_발표자료.pdf'
         },
         {
           projectTitle: '알약 인식 및 분류 모델',
