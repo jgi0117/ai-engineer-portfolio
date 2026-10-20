@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="실험 노트 점검기의 문제 해결, 장점과 4단계 사용법을 두 페이지로 소개합니다.">
+  <meta name="description" content="lablog: 실험 기록을 모아 검색하고 누락 점검과 통계 분석까지 연결하는 개인 연구원용 실험 노트 웹앱.">
   <meta name="theme-color" content="#102f2b">
-  <title>실험 노트 점검기 · 2분 소개</title>
+  <title>lablog · 실험 기록 웹앱</title>
   <style>
     :root{--bg:#eef3ef;--ink:#132522;--muted:#61716c;--line:#cbd7d2;--panel:#fff;--green:#0f7066;--deep:#102f2b;--mint:#c9eee4;--copper:#bd6f3b}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Pretendard,"IBM Plex Sans KR","Noto Sans KR","Malgun Gothic",sans-serif}a{color:inherit}.wrap{width:min(1180px,calc(100% - 40px));margin:auto}
@@ -19,34 +19,41 @@
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   </style>
 </head>
+
 <body>
   <section class="page page-one">
-    <header class="wrap top"><a class="brand" href="../index_lab.html">LABORATORY AI</a><a class="back" href="../index_lab.html">← 포트폴리오</a></header>
+    <header class="wrap top"><a class="brand" href="../index_lab.html">LABLOG · PROJECT CASE</a><a class="back" href="../index_lab.html">← Lab 포트폴리오</a></header>
     <div class="wrap intro">
       <div>
-        <p class="eyebrow">Lab note checker · Page 01</p>
-        <h1>실험 데이터,<br>쌓이기 전에<br>점검합니다.</h1>
-        <p class="lead">기록 실수를 줄이고, 누적 통계를 바로 확인하며, 머신러닝으로 확장할 데이터셋을 만듭니다.</p>
-        <div class="actions"><a class="btn main" href="#how">사용법 보기 ↓</a><a class="btn" href="index.html">데모 실행 ↗</a></div>
+        <p class="eyebrow">Personal research note · Data hub</p>
+        <h1>실험 기록을 모아,<br>다음 실험으로<br>이어갑니다.</h1>
+        <p class="lead">lablog는 절차·조건·결과를 한곳에 기록하고, 프로젝트별 현황과 빠진 항목을 확인하는 개인 연구원용 실험 노트 웹앱입니다.</p>
+        <div class="actions"><a class="btn main" href="https://jgi0117.github.io/lablog/" target="_blank" rel="noopener noreferrer">lablog 체험하기 ↗</a><a class="btn" href="https://github.com/jgi0117/lablog" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a class="btn" href="#how">사용 흐름 ↓</a></div>
       </div>
       <div class="value" aria-label="문제 해결과 장점">
-        <article class="value-card problem"><span class="badge">P</span><div><h2>문제 해결 · 축적 실수 감소</h2><p>업로드 직후 결측치, 형식 오류, 단위 불일치와 이상치 후보를 찾아 다시 확인할 위치를 보여줍니다.</p></div></article>
-        <article class="value-card"><span class="badge">01</span><div><h2>업로드할 때마다 실시간 통계</h2><p>누적 데이터의 요약, 분포, 추이와 입력·출력 관계를 즉시 다시 계산해 시각화합니다.</p></div></article>
-        <article class="value-card"><span class="badge">02</span><div><h2>CSV·XLSX 다운로드 → ML 확장</h2><p>전체 데이터와 점검 상태를 내려받아, 충분히 쌓이면 품질·공정 결과 예측 모델에 활용할 수 있습니다.</p></div></article>
+        <article class="value-card problem"><span class="badge">P</span><div><h2>흩어진 기록, 찾기와 재현의 어려움</h2><p>절차와 조건, 결과를 실험 하나에 묶고 프로젝트로 모아, 지난 실험을 찾고 비교할 수 있도록 합니다.</p></div></article>
+        <article class="value-card"><span class="badge">01</span><div><h2>기록 · 검색 · 빠짐 점검</h2><p>수행 중 절차를 체크하고 조건·결과를 기록합니다. 통합 검색과 누락·단위 불일치·이상치 후보 점검으로 다시 확인할 위치를 찾습니다.</p></div></article>
+        <article class="value-card"><span class="badge">02</span><div><h2>복제 · 템플릿 · 데이터 허브</h2><p>이전 실험을 이어받고 달라진 점을 기록합니다. 모든 실험을 한 표에서 분석하고 CSV·JSON과 데이터 사전으로 내보냅니다.</p></div></article>
       </div>
     </div>
-    <div class="wrap page-mark">01 / 02 · WHY</div>
+    <div class="wrap page-mark">01 / 03 · WHY LABLOG</div>
   </section>
-
   <section class="page page-two" id="how">
-    <div class="wrap how-head"><div><p class="eyebrow">How to use · Page 02</p><h2>4단계면 충분합니다.</h2></div><p>예시 데이터로 체험한 뒤 실제 XLSX·CSV 기록을 누적할 수 있습니다. 이미지는 실제 화면 구조를 단순화한 안내 이미지입니다.</p></div>
+    <div class="wrap how-head"><div><p class="eyebrow">Workflow · Page 02</p><h2>기록에서 분석까지.</h2></div><p>실험을 기록하고, 빠진 것을 확인하고, 이전 실험을 이어받아 결과를 비교합니다.</p></div>
     <div class="wrap steps">
-      <article class="step"><div class="visual"><img src="guide-01-upload.svg" alt="실험 기록 파일 업로드 화면"></div><div class="copy"><span class="step-no">STEP 01 · INPUT</span><h3>기록 가져오기</h3><p>XLSX·CSV 파일을 선택하거나 예시 데이터를 불러옵니다.</p></div></article>
-      <article class="step"><div class="visual"><img src="guide-02-table.svg" alt="누적 데이터를 표에서 확인하는 화면"></div><div class="copy"><span class="step-no">STEP 02 · TABLE</span><h3>표 확인·수정</h3><p>가져온 값과 단위를 확인하고 필요한 셀을 바로 고칩니다.</p></div></article>
-      <article class="step"><div class="visual"><img src="guide-03-check.svg" alt="결측치와 이상치 점검 화면"></div><div class="copy"><span class="step-no">STEP 03 · CHECK</span><h3>오류 후보 점검</h3><p>결측·단위·이상치 후보를 원자료와 대조해 처리합니다.</p></div></article>
-      <article class="step"><div class="visual"><img src="guide-04-stats.svg" alt="통계 시각화와 데이터 다운로드 화면"></div><div class="copy"><span class="step-no">STEP 04 · USE</span><h3>통계 확인·다운로드</h3><p>갱신된 통계를 보고 전체 데이터를 CSV·XLSX로 받습니다.</p></div></article>
+      <article class="step"><div class="copy"><span class="step-no">STEP 01 · RECORD</span><h3>만들기 · 수행하기</h3><p>프로젝트와 태그로 분류하고, 수행 모드에서 절차를 체크하며 메모와 조건·결과 값을 남깁니다.</p></div><div class="copy"><h3>절차 → 조건 → 결과</h3><p>실험 하나에 작업 흐름과 수치를 함께 보관합니다.</p></div></article>
+      <article class="step"><div class="copy"><span class="step-no">STEP 02 · FIND & CHECK</span><h3>검색 · 빠짐 점검</h3><p>제목·단계·조건·결과를 통합 검색합니다. 빈 결과, 미완료 단계와 단위 불일치, 이상치 후보를 확인합니다.</p></div><div class="copy"><h3>프로젝트별 현황</h3><p>진행률, 최근 활동과 타임라인으로 맡은 실험을 살펴봅니다.</p></div></article>
+      <article class="step"><div class="copy"><span class="step-no">STEP 03 · REUSE</span><h3>복제 · 템플릿</h3><p>이전 실험의 절차와 조건을 이어받고, 템플릿으로 반복 작업을 시작합니다. 기존 절차와 달라진 점도 기록합니다.</p></div><div class="copy"><h3>반복 실험의 출발점</h3><p>결과 값을 비워 둔 채 절차와 조건을 재사용합니다.</p></div></article>
+      <article class="step"><div class="copy"><span class="step-no">STEP 04 · ANALYZE & EXPORT</span><h3>데이터 허브 · 통계</h3><p>모든 프로젝트의 실험을 한 표에 모아 검색·정렬·필터로 살펴보고 조건 값별 비교와 상관 행렬을 확인합니다.</p></div><div class="copy"><h3>CSV · JSON · 데이터 사전</h3><p>후속 분석과 머신러닝용 데이터를 내보냅니다. 설정에서 JSON 백업과 복원도 가능합니다.</p></div></article>
     </div>
-    <div class="wrap bottom"><p>다음 단계: 데이터가 충분히 쌓이면 공정 결과·품질 예측 모델의 학습 데이터로 활용합니다.</p><a class="btn main" href="index.html">실제 데모 체험하기 ↗</a></div>
+    <div class="wrap bottom"><p>React · TypeScript · Vite · Dexie / IndexedDB · MiniSearch</p><a class="btn main" href="https://jgi0117.github.io/lablog/" target="_blank" rel="noopener noreferrer">실제 앱 체험하기 ↗</a></div>
+  </section>
+  <section class="page" style="background:#eef3ef;padding-bottom:28px">
+    <div class="wrap how-head"><div><p class="eyebrow">Live demo · Page 03</p><h2>공개 예시로 둘러보기.</h2></div><p>UCI 콘크리트 공개 데이터 기반 프로젝트 4개, 실험 1,030건으로 시작합니다. 처음에는 데이터 준비에 시간이 걸릴 수 있습니다.</p></div>
+    <div class="wrap"><iframe src="https://jgi0117.github.io/lablog/" title="lablog 공개 데모" loading="lazy" style="width:100%;height:580px;border:1px solid #cbd7d2;border-radius:18px;background:white"></iframe>
+    <p style="color:#61716c;font-size:13px"><strong>현재 단계:</strong> 복제·템플릿·변경점 기록과 데이터 허브·통계 분석 구현 완료. Supabase 전환은 예정 단계이며 사용성 테스트와 실기기 확인은 남아 있습니다.</p>
+    <p style="color:#61716c;font-size:13px">기록은 현재 브라우저의 IndexedDB에 저장됩니다. 다른 기기·브라우저·주소에서는 공유되지 않으므로 중요한 기록은 설정에서 백업 파일로 내보내세요.</p>
+    <div class="actions"><a class="btn main" href="https://jgi0117.github.io/lablog/" target="_blank" rel="noopener noreferrer">전체 화면으로 체험 ↗</a><a class="btn" href="https://github.com/jgi0117/lablog" target="_blank" rel="noopener noreferrer">코드와 개발 문서 ↗</a><a class="btn" href="../index_lab.html">← 포트폴리오</a></div></div>
   </section>
 </body>
 </html>
