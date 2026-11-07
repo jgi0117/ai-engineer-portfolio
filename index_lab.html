@@ -181,7 +181,7 @@
         <div class="case-foot">
           <a class="btn btn--primary" id="lablog-demo" href="#" target="_blank" rel="noreferrer">라이브 데모 ↗</a>
           <a class="btn" id="lablog-github" href="#" target="_blank" rel="noreferrer">GitHub ↗</a>
-          <a class="btn" id="lablog-slides" href="#" target="_blank" rel="noreferrer">발표자료 ↗</a>
+          <button class="btn" id="lablog-slides" type="button">발표자료</button>
         </div>
         <p class="src"><b>데이터</b> · 외부 공개 데이터 사용 — UCI Concrete Compressive Strength(콘크리트 배합 → 압축강도, 1,030건). 프로젝트 16개는 이 데이터를 목표별로 나눈 예시.</p>
         <details>
@@ -216,7 +216,6 @@
 
     document.getElementById('lablog-demo').href = window.LABLOG_URL;
     document.getElementById('lablog-github').href = window.LABLOG_GITHUB;
-    document.getElementById('lablog-slides').href = window.LABLOG_SLIDES;
 
     const mi = projects.findIndex((p) => p.projectTitle.includes('설비 고장 예측'));
     const m = projects[mi];
@@ -298,6 +297,11 @@
       const src = p.pdfFile.toLowerCase().endsWith('.pdf') ? `${url}#view=FitH&toolbar=0&navpanes=0` : `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
       openModal(`<header><h2>${esc(p.projectTitle)} · 발표자료</h2><button class="x" type="button" aria-label="닫기">×</button></header><iframe src="${src}" title="발표자료"></iframe>`);
     }
+    function openDeck() {
+      const url = './public/lablog-deck/index.html';
+      openModal(`<header><h2>lablog · 발표자료</h2><div style="display:flex;gap:10px;align-items:center"><a href="${url}" target="_blank" rel="noreferrer" style="font-size:13px;font-weight:700">새 창으로 열기 ↗</a><button class="x" type="button" aria-label="닫기">×</button></div></header><iframe src="${url}" title="lablog 발표자료" style="height:80vh"></iframe>`);
+    }
+    document.getElementById('lablog-slides').addEventListener('click', openDeck);
     function openDetail(i) {
       const p = projects[i];
       openModal(`

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lablog 소개</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root { --bg: #f4f6f9; --card: #fff; --ink: #141c27; --ink-2: #44505e; --ink-3: #6b7684; --line: #dbe1e8; --accent: #2a78d6; --accent-soft: #e6effb; --green: #1baf7a; --green-bg: #e2f6ec; --orange: #eb6834; --orange-bg: #fdeae2; --violet: #6250d6; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #141c27; color: var(--ink); font-family: 'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif; }
+  .deck { max-width: 1120px; margin: 0 auto; padding: 24px 16px 84px; }
+  .slide { display: none; background: var(--card); border-radius: 18px; padding: 56px 64px; min-height: 640px; position: relative; }
+  .slide.is-active { display: flex; flex-direction: column; justify-content: center; }
+  .kicker { margin: 0 0 14px; color: var(--accent); font-size: 13px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+  h1 { margin: 0; font-size: 54px; line-height: 1.1; letter-spacing: -0.04em; }
+  h2 { margin: 0 0 28px; font-size: 40px; line-height: 1.15; letter-spacing: -0.035em; }
+  .sub { margin: 18px 0 0; color: var(--ink-2); font-size: 24px; }
+  .muted { color: var(--ink-3); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .box { border: 1px solid var(--line); border-radius: 16px; padding: 28px; background: #fafbfc; }
+  .box small { display: block; color: var(--c, var(--accent)); font-size: 13px; font-weight: 800; letter-spacing: .14em; }
+  .box h3 { margin: 8px 0 10px; font-size: 30px; line-height: 1.2; letter-spacing: -0.03em; }
+  .box p { margin: 0; color: var(--ink-2); font-size: 20px; line-height: 1.5; }
+  .box .now, .box .ideal { display: block; margin-top: 8px; color: var(--ink-2); font-size: 20px; line-height: 1.45; }
+  .box .now::before { content: '✕ 현재 '; color: var(--orange); font-weight: 800; }
+  .box .ideal::before { content: '✓ 이상 '; color: var(--green); font-weight: 800; }
+  .box.bad { --c: var(--orange); } .box.good { --c: var(--green); } .box.plan { --c: var(--violet); }
+  .num { font-size: 88px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; color: var(--accent); margin: 6px 0; white-space: nowrap; }
+  .num small { font-size: 26px; color: var(--ink-3); font-weight: 600; letter-spacing: 0; margin-left: 8px; }
+  img.shot { width: 100%; border: 1px solid var(--line); border-radius: 12px; }
+  .caption { margin: 14px 0 0; font-size: 22px; color: var(--ink-2); text-align: center; }
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .flow div { position: relative; padding: 22px 14px; border-radius: 14px; background: var(--accent-soft); text-align: center; font-size: 20px; font-weight: 700; line-height: 1.3; }
+  .flow div b { display: block; color: var(--accent); font-size: 13px; letter-spacing: .14em; margin-bottom: 8px; }
+  .flow div:not(:last-child)::after { content: '›'; position: absolute; right: -11px; top: 50%; transform: translateY(-55%); color: var(--ink-3); font-size: 28px; font-weight: 800; }
+  .n { position: absolute; right: 26px; bottom: 18px; color: var(--ink-3); font-size: 13px; }
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(20,28,39,.95); color: #e5e7eb; display: flex; gap: 12px; align-items: center; justify-content: center; padding: 10px; font-size: 14px; }
+  .nav button { background: #fff; color: var(--ink); border: 1px solid var(--line); padding: 6px 14px; border-radius: 6px; font-size: 14px; cursor: pointer; }
+  @media print { body { background: #fff; } .deck { max-width: none; padding: 0; } .slide { display: flex; page-break-after: always; min-height: 100vh; border-radius: 0; } .nav { display: none; } }
+  @media (max-width: 760px) { .two, .flow { grid-template-columns: 1fr; } .flow div::after { display: none; } .slide { padding: 28px 22px; min-height: auto; } h1 { font-size: 34px; } h2 { font-size: 28px; } .num { font-size: 56px; } .box h3 { font-size: 24px; } .box p { font-size: 17px; } }
+</style>
+</head>
+<body>
+<div class="deck">
+
+<section class="slide is-active">
+  <p class="kicker">lablog · 제품개발팀 실험 관리</p>
+  <h1>흩어진 실험을 한 곳에 모으고,<br>조건을 머신러닝으로 예측·시뮬레이션한다</h1>
+  <p class="sub">실험 관리 도구 lablog — 기록은 한 표에, 다음 조건은 쌓인 데이터로</p>
+  <p class="muted" style="margin-top:40px">2026-11-07 · 외부 공개 데이터 사용: UCI Concrete Compressive Strength 1,030건</p>
+  <div class="n">1 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">01 · 문제 정의 = 현재와 이상의 차이</p>
+  <h2>문제 상황 둘</h2>
+  <div class="two">
+    <div class="box bad"><small>문제 ①</small><h3>실험 기록이<br>흩어져 있다</h3><span class="now">엑셀·노트·메신저에 따로 적혀 모이지 않음</span><span class="ideal">모든 프로젝트의 실험이 한 표에 모여 있음</span></div>
+    <div class="box bad"><small>문제 ②</small><h3>다음 실험 조건을<br>짐작한다</h3><span class="now">경험으로 정하고, 빗나가면 하루가 감</span><span class="ideal">머신러닝으로 결과를 예측·시뮬레이션해 정함</span></div>
+  </div>
+  <div class="n">2 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">02 · 해결 = 기능 둘</p>
+  <h2>모으는 기능 + 시뮬레이션하는 기능</h2>
+  <div class="two">
+    <div class="box good"><small>① 한 곳에 모으는 기능</small><h3>조건·결과만<br>같은 틀로 기록</h3><p>입력·측정 시점·출력·목표(목표값 ± 허용)만 적는다. 프로젝트가 달라도 한 표에 쌓여 바로 비교·학습 가능.</p></div>
+    <div class="box plan"><small>② 시뮬레이션하는 기능</small><h3>결과를 예측하고<br>조건을 제안</h3><p>쌓인 데이터로 머신러닝 학습. 조건을 넣으면 결과를 예측하고, 목표를 만족할 조건을 제안. 달성하면 종료.</p></div>
+  </div>
+  <div class="n">3 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">03 · 한 실험의 흐름</p>
+  <h2>5단계</h2>
+  <div class="flow">
+    <div><b>01</b>변수·목표 입력</div>
+    <div><b>02</b>처음 조건 제안<br><span class="muted" style="font-size:15px;font-weight:500">범위를 고르게 덮는 설계</span></div>
+    <div><b>03</b>결과만 입력</div>
+    <div><b>04</b>머신러닝이<br>다음 조건 제안<br><span class="muted" style="font-size:15px;font-weight:500">결과 예측 · 목표 만족 확률</span></div>
+    <div><b>05</b>목표 달성 → 종료</div>
+  </div>
+  <div class="n">4 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">04 · 화면 · 실험</p>
+  <img class="shot" src="img/project.jpg" alt="다음 실험 카드: 조건 8개가 적혀 있고 결과 입력 칸 하나, 오른쪽에 목표 현황과 가장 가까운 조건">
+  <p class="caption">다음 실험 카드 — 제안받은 조건 확인, 결과 숫자만 입력, 목표 ± 허용 판정</p>
+  <div class="n">5 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">05 · 화면 · 모델</p>
+  <img class="shot" src="img/model.jpg" alt="모델 탭: 적용 중인 모델의 교차검증 R², 예측 vs 실제 산점도, 조건 중요도">
+  <p class="caption">모델 탭 — 예측 정확도·오차, 조건 중요도 · 알고리즘·파라미터를 골라 직접 학습, 버전 저장·적용</p>
+  <div class="n">6 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">06 · 화면 · 데이터 점검</p>
+  <img class="shot" src="img/check.jpg" alt="표준화 박스플롯: 변수마다 상자와 수염, 밖의 주황 점이 이상치 후보">
+  <p class="caption">표준화 박스플롯 — 이상치와 소수점 실수를 한눈에, 누르면 표에서 찾기</p>
+  <div class="n">7 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">07 · 결과 · 한 표와 예측</p>
+  <h2>한 표에 모인 실험, 결과 예측 정확도</h2>
+  <div class="two">
+    <div class="box good"><small>한 표에 모인 실험</small><div class="num">992<small>건</small></div><p>프로젝트 16개의 실험 기록 전부가 한 표에. 흩어진 기록 없음.</p></div>
+    <div class="box good"><small>결과 예측 정확도</small><div class="num">80<small>%</small></div><p>실험 전에 결과를 맞히는 정도(R² 0.8, 교차검증). 프로젝트 하나만으로 학습하면 −20~96%.</p></div>
+  </div>
+  <div class="n">8 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">08 · 결과 · 목표 달성</p>
+  <h2>예시 프로젝트 12개 중 9개가 목표 달성</h2>
+  <div class="two">
+    <div class="box good"><small>목표 달성 프로젝트</small><div class="num">9<small>/ 12</small></div><p>실험 10~23번 만에 목표 ± 허용 안. 달성하면 종료, 다음 실험을 더 짜지 않는다.</p></div>
+    <div class="box plan"><small>진행 중 3개</small><h3>머신러닝이<br>다음 조건 제안</h3><p>목표 만족 확률이 가장 큰 조건 3개를 제안, 이미 계획한 조건은 피한다.</p></div>
+  </div>
+  <div class="n">9 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">09 · 한계</p>
+  <h2>아직 못 하는 것</h2>
+  <div class="two">
+    <div class="box bad"><small>데이터</small><h3>숫자 조건만</h3><p>기재 종류 같은 문자 조건은 아직 입력에 쓰지 않는다. 변수 이름이 다르면 모으지 못한다.</p></div>
+    <div class="box bad"><small>신뢰</small><h3>범위 밖은 모른다</h3><p>실험한 범위 안에서만 유효. 확률은 보장이 아니고, 후보도 실험으로 확인해야 한다.</p></div>
+  </div>
+  <div class="n">10 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">10 · 향후</p>
+  <h2>다음에 할 것</h2>
+  <div class="two">
+    <div class="box plan"><small>기능</small><h3>문자 조건 · 변수 별칭</h3><p>원-핫 입력과 이름 맞추기로 더 많은 프로젝트를 한 모델로.</p></div>
+    <div class="box plan"><small>검증</small><h3>실제 팀 데이터 · 팀 공유</h3><p>현장 데이터로 R² 확인, 브라우저 저장을 넘어 공유 저장소.</p></div>
+  </div>
+  <div class="n">11 / 12</div>
+</section>
+
+<section class="slide">
+  <p class="kicker">끝</p>
+  <h1>써 보기</h1>
+  <p class="sub"><a href="https://lablog-kgt8.vercel.app/">lablog-kgt8.vercel.app</a> — 브라우저에서 바로. 처음 열면 예시 프로젝트 16개가 들어 있습니다.</p>
+  <p class="muted" style="margin-top:28px">문서: docs/01_문제정의와_설계.md · 테스트 25개 · GitHub Pages / Vercel 배포</p>
+  <div class="n">12 / 12</div>
+</section>
+
+</div>
+<div class="nav">
+  <button type="button" id="prev">← 이전</button>
+  <span id="pos">1 / 12</span>
+  <button type="button" id="next">다음 →</button>
+  <button type="button" onclick="window.print()">인쇄/PDF</button>
+  <span>· ← → 키</span>
+</div>
+<script>
+  const slides = [...document.querySelectorAll('.slide')]
+  let i = Math.max(0, Math.min(slides.length - 1, Number(location.hash.slice(1)) - 1 || 0))
+  const go = (k) => {
+    i = Math.max(0, Math.min(slides.length - 1, k))
+    slides.forEach((s, j) => s.classList.toggle('is-active', j === i))
+    document.getElementById('pos').textContent = `${i + 1} / ${slides.length}`
+    history.replaceState(null, '', `#${i + 1}`)
+    window.scrollTo(0, 0)
+  }
+  document.getElementById('prev').onclick = () => go(i - 1)
+  document.getElementById('next').onclick = () => go(i + 1)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') go(i + 1)
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(i - 1)
+  })
+  go(i)
+</script>
+</body>
+</html>
