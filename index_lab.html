@@ -98,6 +98,8 @@
     .modal header { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
     .modal h2 { margin: 0; font-size: 24px; letter-spacing: -0.03em; }
     .modal .x { border: 0; background: #e9edf2; width: 38px; height: 38px; border-radius: 50%; font-size: 20px; cursor: pointer; }
+    .modal section.modal--deck { --w: min(1120px, calc(100vw - 88px), calc((100vh - 190px) * 16 / 9)); width: calc(var(--w) + 56px); }
+    .modal section.modal--deck iframe { width: var(--w); height: calc(var(--w) * 9 / 16 + 52px); }
     .modal iframe { width: 100%; height: 76vh; border: 0; background: #f4f6f9; border-radius: 10px; margin-top: 12px; }
     .modal .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
     .modal .step { gap: 6px; }
@@ -278,10 +280,10 @@
       .map(({ p, i }) => `<button type="button" data-detail="${i}"><img src="${img(p.mainImage)}" alt="" loading="lazy" /><span><small>${label(p.category)}${p.isTeamLead ? ' · 팀장' : ''} · ${esc(p.period.slice(0, 7))}</small><strong>${esc(p.projectTitle)}</strong></span></button>`)
       .join('');
 
-    function openModal(html) {
+    function openModal(html, cls = '') {
       const el = document.createElement('div');
       el.className = 'modal';
-      el.innerHTML = `<section role="dialog" aria-modal="true">${html}</section>`;
+      el.innerHTML = `<section role="dialog" aria-modal="true" class="${cls}">${html}</section>`;
       const close = () => { document.removeEventListener('keydown', onKey); el.remove(); document.body.style.overflow = ''; };
       const onKey = (e) => { if (e.key === 'Escape') close(); };
       el.addEventListener('click', (e) => { if (e.target === el) close(); });
@@ -299,7 +301,7 @@
     }
     function openDeck() {
       const url = './public/lablog-deck/index.html';
-      openModal(`<header><h2>lablog · 발표자료</h2><div style="display:flex;gap:10px;align-items:center"><a href="${url}" target="_blank" rel="noreferrer" style="font-size:13px;font-weight:700">새 창으로 열기 ↗</a><button class="x" type="button" aria-label="닫기">×</button></div></header><iframe src="${url}" title="lablog 발표자료" style="height:80vh"></iframe>`);
+      openModal(`<header><h2>lablog · 발표자료</h2><div style="display:flex;gap:10px;align-items:center"><a href="${url}" target="_blank" rel="noreferrer" style="font-size:13px;font-weight:700">새 창으로 열기 ↗</a><button class="x" type="button" aria-label="닫기">×</button></div></header><iframe src="${url}" title="lablog 발표자료"></iframe>`, 'modal--deck');
     }
     document.getElementById('lablog-slides').addEventListener('click', openDeck);
     function openDetail(i) {
